@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FoodHub Restaurant - Online food ordering demo with digital menu, table reservation & delivery by MBD Solutions.">
+  <title>FoodHub Restaurant | Food Ordering Demo – MBD Solutions</title>
+  <link rel="icon" type="image/png" href="../../assets/logos/mbd-logo-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../demo-shared.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="demo-badge">Demo by <a href="../../index.html">MBD Solutions</a></div>
+
+  <header class="demo-header">
+    <nav class="demo-nav container">
+      <a href="index.html" class="demo-logo">
+        <span class="demo-logo-icon">🍽️</span>
+        FoodHub Restaurant
+      </a>
+      <button class="demo-nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="demo-nav-links">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#popular">Popular</a></li>
+        <li><a href="#reservation">Reserve</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#delivery">Delivery</a></li>
+        <li>
+          <button id="cart-toggle" class="btn btn-sm btn-primary cart-btn" type="button">
+            🛒 Cart (<span id="cart-count">0</span>)
+          </button>
+        </li>
+        <li><a href="../../index.html" class="btn btn-sm btn-outline">← MBD Solutions</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="demo-hero" id="home">
+    <div class="demo-hero-bg"></div>
+    <div class="demo-hero-orb demo-hero-orb-1"></div>
+    <div class="demo-hero-orb demo-hero-orb-2"></div>
+    <div class="container demo-hero-content">
+      <span class="section-tag">Fresh & Delicious</span>
+      <h1>Taste the <span>Best Food</span> in Town</h1>
+      <p class="demo-hero-sub">Order online from our digital menu — Paneer Butter Masala, Biryani, Pizza, Burger & South Indian Meals delivered to your door.</p>
+      <div class="demo-hero-actions">
+        <a href="#menu" class="btn btn-primary">Order Now</a>
+        <a href="#" id="hero-wa" class="btn btn-whatsapp">WhatsApp Order</a>
+        <a href="#reservation" class="btn btn-outline">Reserve Table</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="popular">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Chef's Picks</span>
+        <h2>Popular Dishes</h2>
+        <p>Our most loved dishes — ordered by hundreds every week.</p>
+      </div>
+      <div class="grid-3 reveal">
+        <div class="glass glass-card popular-dish">
+          <div class="popular-dish-emoji">🍛</div>
+          <h4>Paneer Butter Masala</h4>
+          <p>Creamy tomato gravy with soft paneer cubes — ₹249</p>
+        </div>
+        <div class="glass glass-card popular-dish">
+          <div class="popular-dish-emoji">🍚</div>
+          <h4>Hyderabadi Biryani</h4>
+          <p>Aromatic basmati rice with spiced chicken — ₹299</p>
+        </div>
+        <div class="glass glass-card popular-dish">
+          <div class="popular-dish-emoji">🥘</div>
+          <h4>South Indian Meals</h4>
+          <p>Full meals with sambar, rasam & curd — ₹179</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu" style="background: rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Digital Menu</span>
+        <h2>Online Food Ordering</h2>
+        <p>Browse our menu, add items to cart, and place your order instantly.</p>
+      </div>
+      <div class="grid-3 reveal" id="menu-grid"></div>
+    </div>
+  </section>
+
+  <section id="reservation">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Dine In</span>
+        <h2>Table Reservation</h2>
+        <p>Book a table for your family dinner or special occasion.</p>
+      </div>
+      <div class="reservation-section reveal">
+        <form id="reservation-form" class="glass glass-card form-grid">
+          <div class="form-row">
+            <label for="res-name">Full Name</label>
+            <input type="text" id="res-name" placeholder="Your name" required>
+          </div>
+          <div class="form-row">
+            <label for="res-phone">Mobile Number</label>
+            <input type="tel" id="res-phone" placeholder="10-digit mobile" required>
+          </div>
+          <div class="form-row-2">
+            <div class="form-row">
+              <label for="res-date">Date</label>
+              <input type="date" id="res-date" required>
+            </div>
+            <div class="form-row">
+              <label for="res-time">Time</label>
+              <select id="res-time" required>
+                <option value="">Select time</option>
+                <option>12:00 PM</option>
+                <option>12:30 PM</option>
+                <option>1:00 PM</option>
+                <option>1:30 PM</option>
+                <option>7:00 PM</option>
+                <option>7:30 PM</option>
+                <option>8:00 PM</option>
+                <option>8:30 PM</option>
+                <option>9:00 PM</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="res-guests">Number of Guests</label>
+            <select id="res-guests" required>
+              <option value="">Select guests</option>
+              <option>1-2 Guests</option>
+              <option>3-4 Guests</option>
+              <option>5-6 Guests</option>
+              <option>7+ Guests</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="res-notes">Special Requests</label>
+            <textarea id="res-notes" placeholder="Birthday, anniversary, dietary needs..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Reserve Table</button>
+        </form>
+        <div class="glass glass-card">
+          <h3 style="font-family: var(--font-display); margin-bottom: 1rem;">Restaurant Hours</h3>
+          <div class="delivery-info">
+            <div class="delivery-item">
+              <span class="delivery-icon">🕐</span>
+              <div>
+                <strong>Lunch</strong>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">12:00 PM – 3:30 PM</p>
+              </div>
+            </div>
+            <div class="delivery-item">
+              <span class="delivery-icon">🌙</span>
+              <div>
+                <strong>Dinner</strong>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">7:00 PM – 11:00 PM</p>
+              </div>
+            </div>
+            <div class="delivery-item">
+              <span class="delivery-icon">📍</span>
+              <div>
+                <strong>Location</strong>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">45 Food Street, Culinary District, Indore</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" style="background: rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Visual Feast</span>
+        <h2>Food Gallery</h2>
+        <p>A glimpse of our delicious creations.</p>
+      </div>
+      <div class="gallery-grid reveal">
+        <div class="gallery-item">🍛<span>Paneer Masala</span></div>
+        <div class="gallery-item">🍚<span>Biryani</span></div>
+        <div class="gallery-item">🍕<span>Pizza</span></div>
+        <div class="gallery-item">🍔<span>Burger</span></div>
+        <div class="gallery-item">🥘<span>South Indian</span></div>
+        <div class="gallery-item">🍗<span>Tikka</span></div>
+        <div class="gallery-item">🫓<span>Dosa</span></div>
+        <div class="gallery-item">🍮<span>Dessert</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Happy Customers</span>
+        <h2>Customer Reviews</h2>
+        <p>What food lovers say about FoodHub Restaurant.</p>
+      </div>
+      <div class="grid-3 reveal">
+        <div class="glass glass-card review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Best biryani in the city! Ordered via WhatsApp and it arrived hot and fresh within 30 minutes."</p>
+          <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--accent-light); font-weight: 600;">— Rahul Verma</p>
+        </div>
+        <div class="glass glass-card review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Paneer Butter Masala is absolutely divine. The online ordering system is so convenient!"</p>
+          <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--accent-light); font-weight: 600;">— Anjali Sharma</p>
+        </div>
+        <div class="glass glass-card review-card">
+          <div class="stars">★★★★★</div>
+          <p>"Reserved a table for anniversary dinner. Ambiance was perfect and food was outstanding!"</p>
+          <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--accent-light); font-weight: 600;">— Deepak Patel</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="delivery" style="background: rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">We Deliver</span>
+        <h2>Delivery Information</h2>
+        <p>Fast, reliable food delivery to your doorstep.</p>
+      </div>
+      <div class="grid-2 reveal">
+        <div class="glass glass-card delivery-info">
+          <div class="delivery-item">
+            <span class="delivery-icon">🛵</span>
+            <div>
+              <strong>Free Delivery</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">On orders above ₹499 within 5 km radius</p>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span class="delivery-icon">⏱️</span>
+            <div>
+              <strong>Delivery Time</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">30–45 minutes average delivery time</p>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span class="delivery-icon">💳</span>
+            <div>
+              <strong>Payment Options</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Cash on Delivery, UPI, Cards accepted</p>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span class="delivery-icon">📞</span>
+            <div>
+              <strong>Order Hotline</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">+91 98765 12345 or WhatsApp us</p>
+            </div>
+          </div>
+        </div>
+        <div class="glass glass-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 1rem;">
+          <div style="font-size: 4rem;">🛵</div>
+          <h3 style="font-family: var(--font-display);">Order Now & Get 10% Off</h3>
+          <p style="color: var(--text-muted);">Use code <strong style="color: var(--accent-light);">FOODHUB10</strong> on your first online order.</p>
+          <a href="#menu" class="btn btn-primary">Browse Menu</a>
+          <button type="button" id="wa-order" class="btn btn-whatsapp">Order via WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mbd-cta">
+    <div class="container reveal">
+      <h3>Want a Similar Website?</h3>
+      <p>Get a professional restaurant website like FoodHub for your business.</p>
+      <div class="mbd-cta-contacts">
+        <a href="https://wa.me/916263478403?text=Hello%20MBD%20Solutions%2C%20I%20want%20a%20website%20like%20FoodHub%20Restaurant." class="btn btn-whatsapp" target="_blank" rel="noopener">WhatsApp: Kuldeep Dhakad — 6263478403</a>
+        <a href="mailto:kuldeepdhakad153@gmail.com" class="btn btn-outline">kuldeepdhakad153@gmail.com</a>
+      </div>
+      <p class="mbd-powered">Powered by <a href="../../index.html">MBD Solutions</a> — Mon Bai Dhakad Solutions</p>
+    </div>
+  </section>
+
+  <footer class="demo-footer">
+    <div class="container">
+      <p>© 2026 FoodHub Restaurant Demo · Built by <a href="../../index.html">MBD Solutions</a></p>
+    </div>
+  </footer>
+
+  <aside class="cart-panel" id="cart-panel">
+    <div class="cart-panel-header">
+      <h3>Your Cart</h3>
+      <button class="cart-close" id="cart-close" type="button" aria-label="Close cart">×</button>
+    </div>
+    <div class="cart-panel-body" id="cart-items"></div>
+    <div class="cart-panel-footer">
+      <div class="cart-total-row">
+        <span>Total</span>
+        <span id="cart-total">₹0</span>
+      </div>
+      <button type="button" id="place-order" class="btn btn-primary btn-block">Place Order</button>
+      <button type="button" id="wa-order-cart" class="btn btn-whatsapp btn-block">Order via WhatsApp</button>
+    </div>
+  </aside>
+
+  <div class="demo-floats">
+    <a href="#" id="float-wa" class="demo-float demo-float-wa" aria-label="WhatsApp">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+  </div>
+
+  <script src="../demo-shared.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

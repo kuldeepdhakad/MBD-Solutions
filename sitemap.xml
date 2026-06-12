@@ -7,6 +7,29 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://mbdsolutions.in/#demos</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://mbdsolutions.in/demos/doctor-care-pro/</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mbdsolutions.in/demos/fitzone-gym/</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mbdsolutions.in/demos/foodhub-restaurant/</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mbdsolutions.in/#services</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
