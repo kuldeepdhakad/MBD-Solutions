@@ -22,27 +22,40 @@ const nav = [
 ];
 
 function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <span className="h-9 w-9" aria-hidden="true" />;
+  const isDark = resolvedTheme === "dark";
 
   return (
     <button
       type="button"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition hover:bg-background hover:text-primary"
-      aria-label="Toggle dark mode"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground transition hover:bg-background hover:text-accent"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      {mounted ? (
+        isDark ? (
+          <Sun className="h-4 w-4 shrink-0" strokeWidth={2} />
+        ) : (
+          <Moon className="h-4 w-4 shrink-0" strokeWidth={2} />
+        )
+      ) : (
+        <span className="h-4 w-4" aria-hidden="true" />
+      )}
     </button>
   );
 }
 
 export function Header() {
   const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const isDark = mounted && resolvedTheme === "dark";
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -73,8 +86,8 @@ export function Header() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "border-b border-border bg-panel/80 shadow-soft backdrop-blur-xl"
+        scrolled || isDark
+          ? "border-b border-border bg-panel/90 shadow-soft backdrop-blur-xl"
           : "border-b border-transparent bg-transparent",
       )}
     >
@@ -103,6 +116,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch
               className="nav-underline rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:text-primary"
               data-active={isActive(item.href)}
               aria-current={isActive(item.href) ? "page" : undefined}
@@ -115,7 +129,8 @@ export function Header() {
         <div className="flex items-center gap-1.5">
           <Link
             href="/search"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition hover:bg-background hover:text-primary"
+            prefetch
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground transition hover:bg-background hover:text-accent"
             aria-label="Search"
           >
             <Search className="h-4 w-4" />

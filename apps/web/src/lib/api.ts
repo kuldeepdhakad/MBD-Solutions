@@ -12,16 +12,25 @@ export {
   getAnalytics,
 } from "./queries";
 
+import { unstable_cache } from "next/cache";
 import { findAll, findOne, resourceConfigs } from "./crud";
 
-/** Public list fetch used by server pages */
+/** Public list fetch used by server pages (cached 60s) */
 export async function getList(
   resource: string,
   params?: Record<string, string>,
 ) {
   const config = resourceConfigs[resource];
-  if (!config) return { data: [], meta: { page: 1, limit: 50, total: 0, totalPages: 0 } };
-  return findAll(config, params || {}, true);
+  if (!config) {
+    return { data: [], meta: { page: 1, limit: 50, total: 0, totalPages: 0 } };
+  }
+
+  const cacheKey = JSON.stringify(params || {});
+  return unstable_cache(
+    () => findAll(config, params || {}, true),
+    [`public-list-${resource}`, cacheKey],
+    { revalidate: 60, tags: [`list-${resource}`] },
+  )();
 }
 
 /** Public single-item fetch by id or slug */

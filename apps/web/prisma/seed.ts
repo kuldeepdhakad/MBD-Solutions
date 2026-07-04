@@ -88,10 +88,10 @@ async function main() {
   const password = await bcrypt.hash(process.env.ADMIN_PASSWORD || "Admin@MBD2026", 12);
 
   const admin = await prisma.user.upsert({
-    where: { email: process.env.ADMIN_EMAIL || "admin@mbdsolutions.in" },
+    where: { email: process.env.ADMIN_EMAIL || "admin@monbaidhakad.in" },
     update: {},
     create: {
-      email: process.env.ADMIN_EMAIL || "admin@mbdsolutions.in",
+      email: process.env.ADMIN_EMAIL || "admin@monbaidhakad.in",
       password,
       name: "Kuldeep Dhakad",
       phone: "6263478403",
@@ -1175,7 +1175,7 @@ One restaurant client reported a 40% increase in online orders after launching t
   const settings = [
     { key: "company", value: { name: "MBD Solutions", legalName: "Mon Bai Dhakad Solutions", phone: "6263478403", email: "kuldeepdhakad153@gmail.com", whatsapp: "916263478403", address: "India", founded: "2023" } },
     { key: "social", value: { whatsapp: "https://wa.me/916263478403", instagram: "https://instagram.com", facebook: "https://facebook.com", linkedin: "https://linkedin.com" } },
-    { key: "seo_defaults", value: { title: "MBD Solutions | Enterprise Software, Websites & Digital Solutions", description: "MBD Solutions builds websites, ERP systems, mobile apps, AI solutions and digital marketing for businesses across India.", siteUrl: "https://mbdsolutions.in" } },
+    { key: "seo_defaults", value: { title: "MBD Solutions | Enterprise Software, Websites & Digital Solutions", description: "MBD Solutions builds websites, ERP systems, mobile apps, AI solutions and digital marketing for businesses across India.", siteUrl: "https://monbaidhakad.in" } },
   ];
 
   for (const setting of settings) {

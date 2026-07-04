@@ -73,7 +73,7 @@ npm run dev
 
 ### Admin credentials (seeded)
 
-- Email: `admin@mbdsolutions.in`
+- Email: `admin@monbaidhakad.in`
 - Password: `Admin@MBD2026`
 
 ## Admin Dashboard

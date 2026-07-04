@@ -10,7 +10,7 @@ import { saveAuth } from "@/lib/auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@mbdsolutions.in");
+  const [email, setEmail] = useState("admin@monbaidhakad.in");
   const [password, setPassword] = useState("Admin@MBD2026");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
