@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MBD Solutions icon">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="35%" stop-color="#fbbf24"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff7cc" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="blueRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="50%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="blueInner" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#0b1f4a"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#fbbf24" flood-opacity="0.35"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1d4ed8" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <circle cx="256" cy="256" r="240" fill="url(#blueRing)" filter="url(#glow)"/>
+  <circle cx="256" cy="256" r="210" fill="none" stroke="url(#gold)" stroke-width="8"/>
+  <circle cx="256" cy="256" r="188" fill="url(#blueInner)"/>
+  <circle cx="256" cy="256" r="188" fill="url(#goldShine)" opacity="0.25"/>
+  <!-- Network nodes -->
+  <g stroke="#60a5fa" stroke-width="2" opacity="0.55">
+    <line x1="256" y1="78" x2="320" y2="120"/>
+    <line x1="320" y1="120" x2="392" y2="110"/>
+    <line x1="256" y1="78" x2="190" y2="118"/>
+    <line x1="190" y1="118" x2="120" y2="108"/>
+    <line x1="392" y1="402" x2="330" y2="360"/>
+    <line x1="120" y1="402" x2="182" y2="360"/>
+  </g>
+  <g fill="#93c5fd">
+    <circle cx="256" cy="78" r="7"/>
+    <circle cx="320" cy="120" r="6"/>
+    <circle cx="392" cy="110" r="5"/>
+    <circle cx="190" cy="118" r="6"/>
+    <circle cx="120" cy="108" r="5"/>
+    <circle cx="392" cy="402" r="5"/>
+    <circle cx="330" cy="360" r="5"/>
+    <circle cx="120" cy="402" r="5"/>
+    <circle cx="182" cy="360" r="5"/>
+  </g>
+  <!-- M -->
+  <path d="M118 330 V182 h34 l44 88 44-88 h34 v148 h-30 V248 l-42 82 h-22 l-42-82 v82 z" fill="url(#gold)"/>
+  <!-- B -->
+  <path d="M248 182 h58 c36 0 58 18 58 46 0 20-10 36-28 44 22 8 36 26 36 50 0 34-28 58-72 58 h-52 z m30 30 v56 h26 c22 0 34-10 34-28 0-18-12-28-34-28 z m0 86 v62 h30 c26 0 40-12 40-31 0-20-14-31-40-31 z" fill="url(#gold)"/>
+  <!-- D with growth arrow -->
+  <path d="M392 182 h52 c58 0 92 38 92 92 s-34 92-92 92 h-52 z m30 30 v124 h20 c40 0 62-26 62-62 s-22-62-62-62 z" fill="url(#gold)"/>
+  <path d="M456 118 l34 34-34 34 v-22 h-48 v-24 h48 z" fill="#fbbf24" stroke="#fde68a" stroke-width="3"/>
+  <path d="M456 118 l34 34-20 8-14-14z" fill="#fff7cc" opacity="0.8"/>
+</svg>

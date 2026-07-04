@@ -1,0 +1,578 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  CLIENT
+  USER
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  REMOTE
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  password     String
+  name         String
+  phone        String?
+  avatar       String?
+  roleId       String
+  role         Role           @relation(fields: [roleId], references: [id])
+  isActive     Boolean        @default(true)
+  refreshToken String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  blogs        Blog[]         @relation("BlogAuthor")
+  applications Application[]
+  tickets      SupportTicket[]
+  auditLogs    AuditLog[]
+  invoices     Invoice[]
+  clientProjects ClientProject[]
+
+  @@index([email])
+  @@index([roleId])
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        RoleName     @unique
+  description String?
+  permissions Permission[]
+  users       User[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  roles       Role[]
+  createdAt   DateTime @default(now())
+}
+
+model Service {
+  id           String        @id @default(cuid())
+  title        String
+  slug         String        @unique
+  shortDesc    String
+  description  String
+  icon         String?
+  bannerImage  String?
+  features     Json
+  benefits     Json
+  process      Json
+  techStack    Json
+  timeline     String?
+  pricing      Json
+  startingPrice String?
+  isFeatured   Boolean       @default(false)
+  status       ContentStatus @default(PUBLISHED)
+  sortOrder    Int           @default(0)
+  metaTitle    String?
+  metaDesc     String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+model Product {
+  id            String        @id @default(cuid())
+  name          String
+  slug          String        @unique
+  tagline       String
+  overview      String
+  description   String
+  icon          String?
+  bannerImage   String?
+  features      Json
+  screenshots   Json
+  gallery       Json
+  liveDemoUrl   String?
+  techStack     Json
+  architecture  String?
+  databaseInfo  String?
+  apiInfo       String?
+  adminPanel    String?
+  mobileApp     String?
+  documentation String?
+  pricing       Json
+  faqs          Json
+  isFeatured    Boolean       @default(false)
+  status        ContentStatus @default(PUBLISHED)
+  sortOrder     Int           @default(0)
+  metaTitle     String?
+  metaDesc      String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+model Project {
+  id           String         @id @default(cuid())
+  title        String
+  slug         String         @unique
+  clientName   String?
+  overview     String
+  problem      String
+  solution     String
+  features     Json
+  gallery      Json
+  screenshots  Json
+  techStack    Json
+  timeline     String?
+  results      Json
+  clientReview String?
+  liveDemoUrl  String?
+  githubUrl    String?
+  coverImage   String?
+  industryId   String?
+  industry     Industry?      @relation(fields: [industryId], references: [id])
+  isFeatured   Boolean        @default(false)
+  status       ContentStatus  @default(PUBLISHED)
+  sortOrder    Int            @default(0)
+  metaTitle    String?
+  metaDesc     String?
+  images       ProjectImage[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+model ProjectImage {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Technology {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  category    String
+  description String?
+  icon        String?
+  websiteUrl  String?
+  isFeatured  Boolean       @default(false)
+  status      ContentStatus @default(PUBLISHED)
+  sortOrder   Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([category])
+  @@index([slug])
+}
+
+model Industry {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String
+  icon        String?
+  image       String?
+  solutions   Json?
+  isFeatured  Boolean       @default(false)
+  status      ContentStatus @default(PUBLISHED)
+  sortOrder   Int           @default(0)
+  projects    Project[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([slug])
+}
+
+model BlogCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  blogs     Blog[]
+  createdAt DateTime @default(now())
+}
+
+model BlogTag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  blogs     Blog[]
+  createdAt DateTime @default(now())
+}
+
+model Blog {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  excerpt     String
+  content     String
+  coverImage  String?
+  categoryId  String?
+  category    BlogCategory? @relation(fields: [categoryId], references: [id])
+  tags        BlogTag[]
+  authorId    String
+  author      User          @relation("BlogAuthor", fields: [authorId], references: [id])
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?
+  views       Int           @default(0)
+  metaTitle   String?
+  metaDesc    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+model Founder {
+  id           String   @id @default(cuid())
+  name         String
+  title        String
+  photo        String?
+  biography    String
+  experience   Json
+  education    Json
+  skills       Json
+  achievements Json
+  certificates Json
+  resumeUrl    String?
+  linkedinUrl  String?
+  githubUrl    String?
+  timeline     Json
+  email        String?
+  phone        String?
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+}
+
+model TeamMember {
+  id         String        @id @default(cuid())
+  name       String
+  role       String
+  photo      String?
+  bio        String?
+  experience String?
+  skills     Json
+  projects   Json?
+  linkedinUrl String?
+  githubUrl  String?
+  twitterUrl String?
+  email      String?
+  isLeadership Boolean     @default(false)
+  status     ContentStatus @default(PUBLISHED)
+  sortOrder  Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Job {
+  id           String         @id @default(cuid())
+  title        String
+  slug         String         @unique
+  department   String
+  location     String
+  type         JobType        @default(FULL_TIME)
+  description  String
+  requirements Json
+  responsibilities Json
+  benefits     Json
+  salaryRange  String?
+  isActive     Boolean        @default(true)
+  isInternship Boolean        @default(false)
+  applications Application[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model Application {
+  id           String            @id @default(cuid())
+  jobId        String
+  job          Job               @relation(fields: [jobId], references: [id])
+  userId       String?
+  user         User?             @relation(fields: [userId], references: [id])
+  name         String
+  email        String
+  phone        String
+  resumeUrl    String?
+  coverLetter  String?
+  portfolioUrl String?
+  status       ApplicationStatus @default(PENDING)
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([jobId])
+  @@index([status])
+}
+
+model Testimonial {
+  id         String        @id @default(cuid())
+  name       String
+  role       String
+  company    String?
+  content    String
+  rating     Int           @default(5)
+  avatar     String?
+  isFeatured Boolean       @default(false)
+  status     ContentStatus @default(PUBLISHED)
+  sortOrder  Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model FAQ {
+  id        String        @id @default(cuid())
+  question  String
+  answer    String
+  category  String?
+  status    ContentStatus @default(PUBLISHED)
+  sortOrder Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Contact {
+  id         String   @id @default(cuid())
+  name       String
+  email      String?
+  phone      String
+  businessType String?
+  requirement String
+  budget     String?
+  isRead     Boolean  @default(false)
+  isReplied  Boolean  @default(false)
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([isRead])
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Media {
+  id           String   @id @default(cuid())
+  filename     String
+  url          String
+  publicId     String?
+  mimeType     String?
+  size         Int?
+  width        Int?
+  height       Int?
+  alt          String?
+  folder       String?
+  createdAt    DateTime @default(now())
+}
+
+model SEO {
+  id          String   @id @default(cuid())
+  pagePath    String   @unique
+  title       String
+  description String
+  keywords    String?
+  ogImage     String?
+  canonical   String?
+  noIndex     Boolean  @default(false)
+  schemaJson  Json?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model HomepageSection {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  title     String?
+  subtitle  String?
+  content   Json?
+  isVisible Boolean  @default(true)
+  sortOrder Int      @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  logo      String?
+  website   String?
+  industry  String?
+  isFeatured Boolean @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  logo      String?
+  website   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Solution {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String
+  icon        String?
+  features    Json
+  status      ContentStatus @default(PUBLISHED)
+  sortOrder   Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model PricingPlan {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  price       String
+  period      String?
+  description String
+  features    Json
+  isPopular   Boolean       @default(false)
+  ctaText     String        @default("Get Started")
+  status      ContentStatus @default(PUBLISHED)
+  sortOrder   Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id])
+  subject   String
+  message   String
+  status    TicketStatus @default(OPEN)
+  priority  String       @default("medium")
+  replies   Json?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  number    String   @unique
+  amount    Float
+  currency  String   @default("INR")
+  status    String   @default("pending")
+  dueDate   DateTime?
+  items     Json
+  pdfUrl    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientProject {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  status      String   @default("active")
+  progress    Int      @default(0)
+  files       Json?
+  notes       Json?
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([entity])
+  @@index([createdAt])
+}
+
+model ProcessStep {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Statistic {
+  id        String   @id @default(cuid())
+  label     String
+  value     String
+  suffix    String?
+  icon      String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}

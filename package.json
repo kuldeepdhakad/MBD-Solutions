@@ -1,0 +1,27 @@
+{
+  "name": "mbd-solutions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MBD Solutions — Enterprise Software Company Platform (Next.js 15)",
+  "scripts": {
+    "dev": "npm run dev -w @mbd/web",
+    "build": "npm run build -w @mbd/web",
+    "start": "npm run start -w @mbd/web",
+    "lint": "npm run lint -w @mbd/web",
+    "db:generate": "npm run db:generate -w @mbd/web",
+    "db:push": "npm run db:push -w @mbd/web",
+    "db:seed": "npm run db:seed -w @mbd/web",
+    "db:studio": "npm run db:studio -w @mbd/web",
+    "db:setup": "npm run db:setup -w @mbd/web"
+  },
+  "workspaces": [
+    "apps/web"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.3",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

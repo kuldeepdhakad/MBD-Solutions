@@ -1,0 +1,8 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "cd ../.. && npm install --legacy-peer-deps && npm run db:generate && npm run build -w @mbd/api"
+
+[deploy]
+startCommand = "cd apps/api && npm run start:prod"
+healthcheckPath = "/api/public/home"
+restartPolicyType = "ON_FAILURE"

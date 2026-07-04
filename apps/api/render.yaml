@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: mbd-api
+    runtime: node
+    rootDir: .
+    buildCommand: npm install --legacy-peer-deps && npm run db:generate && npm run build -w @mbd/api
+    startCommand: npm run start:prod -w @mbd/api
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mbd-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+
+databases:
+  - name: mbd-postgres
+    plan: free
