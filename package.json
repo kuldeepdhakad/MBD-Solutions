@@ -18,6 +18,7 @@
     "apps/web"
   ],
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.12",
     "concurrently": "^9.2.3",
     "typescript": "^5.7.3"
   },
