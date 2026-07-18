@@ -14,7 +14,7 @@ export default function AdminSeoPage() {
         { name: "title", label: "Meta Title" },
         { name: "description", label: "Meta Description", type: "textarea" },
         { name: "keywords", label: "Keywords" },
-        { name: "ogImage", label: "OG Image URL" },
+        { name: "ogImage", label: "OG Image", type: "image" },
         { name: "canonical", label: "Canonical URL" },
         { name: "noIndex", label: "No Index", type: "checkbox" },
         { name: "schemaJson", label: "Schema JSON", type: "json" },

@@ -13,7 +13,7 @@ export default function AdminIndustriesPage() {
         { name: "slug", label: "Slug" },
         { name: "description", label: "Description", type: "textarea" },
         { name: "icon", label: "Icon" },
-        { name: "image", label: "Image URL" },
+        { name: "image", label: "Image", type: "image" },
         { name: "solutions", label: "Solutions (JSON)", type: "json" },
         { name: "status", label: "Status", type: "select", options: ["DRAFT", "PUBLISHED", "ARCHIVED"] },
         { name: "isFeatured", label: "Featured", type: "checkbox" },

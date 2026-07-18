@@ -14,7 +14,7 @@ export function FloatingActions() {
     <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
       <a
         href={`tel:+91${siteConfig.phone}`}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-elevated transition hover:scale-105"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-elevated transition duration-200 hover:-translate-y-0.5 hover:shadow-glow"
         aria-label={`Call ${siteConfig.phone}`}
       >
         <Phone className="h-5 w-5" />
@@ -23,7 +23,7 @@ export function FloatingActions() {
         href={whatsappLink()}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-elevated transition hover:scale-105"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-elevated transition duration-200 hover:-translate-y-0.5 hover:shadow-card"
         aria-label="Chat on WhatsApp"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">

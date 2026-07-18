@@ -1,80 +1,98 @@
 "use client";
 
-const ACCESS_KEY = "mbd_access_token";
-const REFRESH_KEY = "mbd_refresh_token";
-const USER_KEY = "mbd_user";
+/** In-memory session cache only — never persisted to localStorage/sessionStorage. */
+let cachedUser: Record<string, unknown> | null = null;
 
-export function saveAuth(data: {
-  accessToken: string;
-  refreshToken: string;
-  user: any;
-}) {
-  localStorage.setItem(ACCESS_KEY, data.accessToken);
-  localStorage.setItem(REFRESH_KEY, data.refreshToken);
-  localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+/** Remove legacy tokens if they exist from a previous auth implementation. */
+function purgeLegacyAuthStorage() {
+  if (typeof window === "undefined") return;
+  for (const key of ["mbd_access_token", "mbd_refresh_token", "mbd_user"]) {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  }
 }
 
-export function clearAuth() {
-  localStorage.removeItem(ACCESS_KEY);
-  localStorage.removeItem(REFRESH_KEY);
-  localStorage.removeItem(USER_KEY);
+if (typeof window !== "undefined") {
+  purgeLegacyAuthStorage();
 }
 
-export function getAccessToken() {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(ACCESS_KEY);
+export function getCachedUser<T = Record<string, unknown>>(): T | null {
+  return cachedUser as T | null;
 }
 
-export function getRefreshToken() {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(REFRESH_KEY);
+export function setCachedUser(user: Record<string, unknown> | null) {
+  cachedUser = user;
 }
 
-export function getUser<T = any>(): T | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(USER_KEY);
-  return raw ? JSON.parse(raw) : null;
-}
-
-async function refreshAccessToken(): Promise<string | null> {
-  const user = getUser();
-  const refreshToken = getRefreshToken();
-  if (!user?.id || !refreshToken) return null;
-
-  const res = await fetch("/api/auth/refresh", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId: user.id, refreshToken }),
-  });
-
-  if (!res.ok) {
-    clearAuth();
+export async function fetchCurrentUser<T = Record<string, unknown>>(): Promise<T | null> {
+  try {
+    const res = await fetch("/api/auth/me", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      cachedUser = null;
+      return null;
+    }
+    const user = await res.json();
+    cachedUser = user;
+    return user as T;
+  } catch {
+    cachedUser = null;
     return null;
   }
+}
 
+export async function clearAuth() {
+  try {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // Best-effort logout
+  }
+  cachedUser = null;
+}
+
+async function tryRefreshSession(): Promise<boolean> {
+  const res = await fetch("/api/auth/refresh", {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    cachedUser = null;
+    return false;
+  }
   const data = await res.json();
-  saveAuth(data);
-  return data.accessToken as string;
+  if (data.user) cachedUser = data.user;
+  return true;
 }
 
 export async function authedFetch<T = any>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = getAccessToken();
   const headers = new Headers(options.headers || {});
   if (!(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
-  if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  let res = await fetch(`/api${path}`, { ...options, headers });
+  let res = await fetch(`/api${path}`, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
 
   if (res.status === 401) {
-    const newToken = await refreshAccessToken();
-    if (newToken) {
-      headers.set("Authorization", `Bearer ${newToken}`);
-      res = await fetch(`/api${path}`, { ...options, headers });
+    const refreshed = await tryRefreshSession();
+    if (refreshed) {
+      res = await fetch(`/api${path}`, {
+        ...options,
+        headers,
+        credentials: "include",
+      });
     }
   }
 
@@ -82,6 +100,7 @@ export async function authedFetch<T = any>(
     const err = await res.json().catch(() => ({ message: res.statusText }));
     throw new Error(err.message || "Request failed");
   }
+
   return res.json();
 }
 

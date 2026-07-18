@@ -13,7 +13,7 @@ export default function AdminUsersPage() {
         { name: "name", label: "Name" },
         { name: "email", label: "Email" },
         { name: "phone", label: "Phone" },
-        { name: "password", label: "Password (set on create/update)" },
+        { name: "password", label: "Password (set on create/update)", type: "password" },
         { name: "roleId", label: "Role ID" },
         { name: "isActive", label: "Active", type: "checkbox" },
       ]}

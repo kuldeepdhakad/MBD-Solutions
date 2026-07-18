@@ -14,7 +14,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CTABand } from "@/components/shared/cta";
 import { DynamicIcon } from "@/components/shared/icon";
 import { JsonLd } from "@/components/seo/json-ld";
+import { DetailBanner } from "@/components/shared/detail-banner";
 import { getOne, siteConfig, whatsappLink } from "@/lib/api";
+import { resolveProductDemoUrl } from "@/lib/demos";
+import { getProductImage } from "@/lib/images";
 import {
   breadcrumbJsonLd,
   createPageMetadata,
@@ -63,6 +66,7 @@ export default async function ProductDetailPage({ params }: Props) {
   const techStack = Array.isArray(product.techStack) ? product.techStack : [];
   const pricing = Array.isArray(product.pricing) ? product.pricing : [];
   const faqs = Array.isArray(product.faqs) ? product.faqs : [];
+  const demoUrl = resolveProductDemoUrl(product);
 
   const detailSections = [
     { title: "Architecture", body: product.architecture, icon: Layers },
@@ -121,6 +125,11 @@ export default async function ProductDetailPage({ params }: Props) {
       >
         <div className="hero-grid pointer-events-none absolute inset-0 opacity-70" />
         <div className="relative mx-auto max-w-container px-5 md:px-8">
+          <DetailBanner
+            src={getProductImage(product.slug, product.bannerImage)}
+            alt={product.name}
+            priority
+          />
           <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-white shadow-soft">
             <DynamicIcon name={product.icon} className="h-7 w-7" />
           </div>
@@ -134,9 +143,9 @@ export default async function ProductDetailPage({ params }: Props) {
           <p className="mt-3 text-lg font-medium text-accent">{product.tagline}</p>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">{product.overview}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            {product.liveDemoUrl && (
+            {demoUrl && (
               <Button asChild variant="accent">
-                <a href={product.liveDemoUrl} target="_blank" rel="noopener noreferrer">
+                <a href={demoUrl} target="_blank" rel="noopener noreferrer">
                   Live Demo <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
@@ -350,9 +359,9 @@ export default async function ProductDetailPage({ params }: Props) {
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
-                {product.liveDemoUrl && (
+                {demoUrl && (
                   <Button asChild variant="accent">
-                    <a href={product.liveDemoUrl} target="_blank" rel="noopener noreferrer">
+                    <a href={demoUrl} target="_blank" rel="noopener noreferrer">
                       Live Demo
                     </a>
                   </Button>

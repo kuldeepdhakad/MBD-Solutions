@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Linkedin, MessageCircle, Twitter } from "lucide-react";
+import { Logo } from "@/components/layout/logo";
 import { siteConfig, whatsappLink } from "@/lib/api";
 
 const columns = [
@@ -17,10 +19,10 @@ const columns = [
     ],
   },
   {
-    title: "Products",
+    title: "Services",
     links: [
-      { href: "/products", label: "All Products" },
-      { href: "/services", label: "Services" },
+      { href: "/services", label: "All Services" },
+      { href: "/products", label: "Products" },
       { href: "/solutions", label: "Solutions" },
       { href: "/portfolio", label: "Portfolio" },
       { href: "/case-studies", label: "Case Studies" },
@@ -51,6 +53,12 @@ const columns = [
   },
 ];
 
+const socialLinks = [
+  { href: `https://linkedin.com/company/${siteConfig.domain}`, label: "LinkedIn", icon: Linkedin },
+  { href: `https://twitter.com/${siteConfig.twitterHandle.replace("@", "")}`, label: "Twitter", icon: Twitter },
+  { href: whatsappLink(), label: "WhatsApp", icon: MessageCircle },
+];
+
 export function Footer() {
   const pathname = usePathname();
   if (pathname.startsWith("/admin") || pathname.startsWith("/portal")) {
@@ -59,23 +67,16 @@ export function Footer() {
 
   return (
     <footer
-      className="border-t border-border bg-primary text-primary-foreground"
+      className="relative overflow-hidden border-t border-border bg-primary text-primary-foreground"
       role="contentinfo"
       aria-label={`${siteConfig.legalName} footer`}
     >
-      <div className="mx-auto max-w-container px-5 py-16 md:px-8">
+      <div className="pointer-events-none absolute -right-32 top-0 h-64 w-64 rounded-full bg-accent/10 blur-3xl" />
+      <div className="relative mx-auto max-w-container px-5 py-16 md:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2.5" aria-label={siteConfig.name}>
-              <span
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-foreground text-sm font-bold text-primary"
-                aria-hidden="true"
-              >
-                MBD
-              </span>
-              <span className="font-semibold text-primary-foreground">Solutions</span>
-            </div>
-            <p className="mt-2 text-sm text-primary-foreground/60">{siteConfig.legalName}</p>
+            <Logo variant="footer" size="lg" showText />
+            <p className="mt-3 text-sm text-primary-foreground/60">{siteConfig.legalName}</p>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
               Complete digital solutions for every business — websites, software,
               apps, AI and marketing.
@@ -84,14 +85,14 @@ export function Footer() {
               <p className="font-medium text-primary-foreground">{siteConfig.founder}</p>
               <a
                 href={`tel:+91${siteConfig.phone}`}
-                className="block hover:opacity-100"
+                className="block transition hover:text-accent"
                 aria-label={`Call ${siteConfig.phone}`}
               >
                 Mobile: {siteConfig.phone}
               </a>
               <a
                 href={`mailto:${siteConfig.email}`}
-                className="block hover:opacity-100"
+                className="block transition hover:text-accent"
                 aria-label={`Email ${siteConfig.email}`}
               >
                 {siteConfig.email}
@@ -100,11 +101,25 @@ export function Footer() {
                 href={whatsappLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block hover:opacity-100"
+                className="block transition hover:text-accent"
                 aria-label="WhatsApp Support"
               >
                 WhatsApp Support
               </a>
+            </div>
+            <div className="mt-6 flex gap-3">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary-foreground/15 bg-primary-foreground/5 text-primary-foreground/70 transition hover:border-accent/40 hover:bg-accent/10 hover:text-accent"
+                >
+                  <social.icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
 
@@ -116,7 +131,7 @@ export function Footer() {
                   <li key={`${column.title}-${link.href}`}>
                     <Link
                       href={link.href}
-                      className="text-sm text-primary-foreground/65 transition hover:text-primary-foreground"
+                      className="link-hover text-sm text-primary-foreground/70 transition-colors duration-200 hover:text-accent"
                     >
                       {link.label}
                     </Link>

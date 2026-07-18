@@ -1,14 +1,24 @@
-import { SignJWT, jwtVerify } from "jose";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import * as bcrypt from "bcryptjs";
 import { prisma } from "./db";
+import {
+  ACCESS_COOKIE,
+  clearAuthCookies,
+  issueTokens,
+  setAuthCookies,
+  verifyAccessToken,
+  verifyRefreshToken,
+} from "./auth-tokens";
 
-const ACCESS_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "mbd-dev-secret-change-in-production",
-);
-const REFRESH_SECRET = new TextEncoder().encode(
-  process.env.JWT_REFRESH_SECRET || "mbd-dev-refresh-change-in-production",
-);
+export {
+  ACCESS_COOKIE,
+  REFRESH_COOKIE,
+  clearAuthCookies,
+  issueTokens,
+  setAuthCookies,
+  verifyAccessToken,
+  verifyRefreshToken,
+} from "./auth-tokens";
 
 export type AuthUser = {
   id: string;
@@ -17,49 +27,6 @@ export type AuthUser = {
   role: { name: string };
   permissions: string[];
 };
-
-export async function signAccessToken(payload: {
-  sub: string;
-  email: string;
-  role: string;
-}) {
-  return new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("15m")
-    .sign(ACCESS_SECRET);
-}
-
-export async function signRefreshToken(payload: {
-  sub: string;
-  email: string;
-  role: string;
-}) {
-  return new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("7d")
-    .sign(REFRESH_SECRET);
-}
-
-export async function verifyAccessToken(token: string) {
-  const { payload } = await jwtVerify(token, ACCESS_SECRET);
-  return payload as { sub: string; email: string; role: string };
-}
-
-export async function verifyRefreshToken(token: string) {
-  const { payload } = await jwtVerify(token, REFRESH_SECRET);
-  return payload as { sub: string; email: string; role: string };
-}
-
-export async function issueTokens(userId: string, email: string, role: string) {
-  const payload = { sub: userId, email, role };
-  const [accessToken, refreshToken] = await Promise.all([
-    signAccessToken(payload),
-    signRefreshToken(payload),
-  ]);
-  return { accessToken, refreshToken };
-}
 
 export function sanitizeUser(user: any): AuthUser {
   return {
@@ -72,8 +39,10 @@ export function sanitizeUser(user: any): AuthUser {
 }
 
 export async function getUserFromRequest(req: NextRequest) {
+  const cookieToken = req.cookies.get(ACCESS_COOKIE)?.value;
   const header = req.headers.get("authorization");
-  const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
+  const bearerToken = header?.startsWith("Bearer ") ? header.slice(7) : null;
+  const token = cookieToken || bearerToken;
   if (!token) return null;
 
   try {
@@ -98,7 +67,7 @@ export function requireRoles(user: AuthUser | null, roles: string[]) {
 
 export async function loginUser(email: string, password: string) {
   const user = await prisma.user.findUnique({
-    where: { email: email.toLowerCase() },
+    where: { email: email.toLowerCase().trim() },
     include: { role: { include: { permissions: true } } },
   });
 
@@ -152,10 +121,33 @@ export async function refreshTokens(userId: string, refreshToken: string) {
   return { ...tokens, user: sanitizeUser(user) };
 }
 
+export async function refreshTokensFromCookie(refreshToken: string) {
+  const payload = await verifyRefreshToken(refreshToken);
+  return refreshTokens(payload.sub, refreshToken);
+}
+
 export async function logoutUser(userId: string) {
   await prisma.user.update({
     where: { id: userId },
     data: { refreshToken: null },
   });
   return { success: true };
+}
+
+/** Build a JSON response with HttpOnly auth cookies. Tokens are never sent in the body. */
+export function authResponse(
+  data: Record<string, unknown>,
+  tokens: { accessToken: string; refreshToken: string },
+  status = 200,
+) {
+  const res = NextResponse.json(data, { status });
+  setAuthCookies(res, tokens);
+  return res;
+}
+
+/** Build a JSON response that clears auth cookies. */
+export function logoutResponse(data: Record<string, unknown> = { success: true }) {
+  const res = NextResponse.json(data);
+  clearAuthCookies(res);
+  return res;
 }

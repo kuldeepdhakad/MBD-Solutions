@@ -16,7 +16,7 @@ const config: Config = {
         },
         accent: {
           DEFAULT: "var(--accent)",
-          foreground: "#FFFFFF",
+          foreground: "var(--accent-foreground)",
         },
         background: "var(--background)",
         surface: "var(--surface)",
@@ -38,18 +38,31 @@ const config: Config = {
         soft: "var(--shadow-soft)",
         card: "var(--shadow-card)",
         elevated: "var(--shadow-elevated)",
-        glow: "0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent), 0 8px 24px color-mix(in srgb, var(--accent) 10%, transparent)",
+        glow: "0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent), 0 8px 24px color-mix(in srgb, var(--accent) 16%, transparent)",
+        "brand-glow": "var(--glow)",
       },
       borderRadius: {
         xl: "1rem",
         "2xl": "1.25rem",
       },
       maxWidth: {
-        container: "1180px",
+        container: "min(1280px, 100%)",
+      },
+      fontSize: {
+        display: ["clamp(1.75rem, 1.35rem + 2vw, 3.25rem)", { lineHeight: "1.12", letterSpacing: "-0.02em" }],
+        heading: ["clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem)", { lineHeight: "1.15", letterSpacing: "-0.015em" }],
       },
       keyframes: {
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(12px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "page-enter": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "drawer-in": {
@@ -60,11 +73,18 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s ease-out both",
+        "fade-in": "fade-in 0.4s ease-out both",
+        "page-enter": "page-enter 0.35s ease-out both",
         "drawer-in": "drawer-in 0.28s ease-out both",
         "backdrop-in": "backdrop-in 0.2s ease-out both",
+        shimmer: "shimmer 1.5s ease-in-out infinite",
       },
     },
   },

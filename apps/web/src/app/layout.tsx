@@ -22,11 +22,12 @@ const inter = Inter({
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
+    { media: "(prefers-color-scheme: light)", color: "#071B4D" },
+    { media: "(prefers-color-scheme: dark)", color: "#040D24" },
   ],
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
 };
 
 export const metadata: Metadata = {
@@ -96,11 +97,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
       { url: "/assets/logos/favicon.svg", type: "image/svg+xml" },
-      { url: "/assets/logos/mbd-logo-favicon.png", type: "image/png" },
     ],
-    shortcut: ["/assets/logos/mbd-logo-favicon.png"],
-    apple: [{ url: "/assets/logos/mbd-logo-icon.png" }],
+    shortcut: ["/favicon.ico"],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/manifest.webmanifest",
   verification: {
@@ -134,7 +137,7 @@ export default function RootLayout({
         </a>
         <Providers>
           <Header />
-          <main id="main-content" className="min-h-screen" role="main">
+          <main id="main-content" className="page-shell min-h-screen" role="main">
             {children}
           </main>
           <Footer />

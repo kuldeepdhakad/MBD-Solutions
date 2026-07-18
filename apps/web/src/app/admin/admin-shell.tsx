@@ -28,7 +28,8 @@ import {
   Factory,
   UserCircle,
 } from "lucide-react";
-import { clearAuth, getUser } from "@/lib/auth";
+import { Logo } from "@/components/layout/logo";
+import { clearAuth, fetchCurrentUser } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -70,19 +71,21 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       setReady(true);
       return;
     }
-    const user = getUser();
-    if (!user || !["SUPER_ADMIN", "ADMIN", "EDITOR"].includes(user.role?.name)) {
-      router.replace("/admin/login");
-      return;
-    }
-    setReady(true);
+    fetchCurrentUser<{ role?: { name?: string } }>().then((user) => {
+      if (!user || !["SUPER_ADMIN", "ADMIN", "EDITOR"].includes(user.role?.name ?? "")) {
+        router.replace("/admin/login");
+        return;
+      }
+      setReady(true);
+    });
   }, [pathname, router]);
 
   if (pathname === "/admin/login") return children;
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-muted">
-        Loading admin...
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background" role="status" aria-label="Loading admin">
+        <Logo size="lg" showText />
+        <p className="text-sm text-muted">Loading admin...</p>
       </div>
     );
   }
@@ -110,8 +113,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         );
       })}
       <button
-        onClick={() => {
-          clearAuth();
+        onClick={async () => {
+          await clearAuth();
           router.push("/admin/login");
         }}
         className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-danger hover:bg-red-50"
@@ -126,11 +129,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen bg-background">
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-64 shrink-0 overflow-y-auto border-r border-border bg-surface md:block">
-          <div className="sticky top-0 flex h-16 items-center gap-2 border-b border-border bg-surface px-5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">
-              MBD
-            </span>
-            <span className="text-sm font-semibold">Admin</span>
+          <div className="sticky top-0 flex h-16 items-center border-b border-border bg-surface px-4">
+            <Logo size="sm" showText />
+            <span className="ml-2 text-xs font-medium text-muted">Admin</span>
           </div>
           {Nav}
         </aside>

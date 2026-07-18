@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Moon, Phone, Search, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/layout/logo";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 
@@ -31,7 +32,7 @@ function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground transition hover:bg-background hover:text-accent"
+      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground transition duration-200 hover:bg-panel hover:text-accent"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {mounted ? (
@@ -87,29 +88,15 @@ export function Header() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled || isDark
-          ? "border-b border-border bg-panel/90 shadow-soft backdrop-blur-xl"
-          : "border-b border-transparent bg-transparent",
+          ? "border-b border-border bg-surface/90 shadow-soft backdrop-blur-xl"
+          : "border-b border-transparent bg-background/80 backdrop-blur-sm",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-container items-center justify-between gap-3 px-5 md:h-[72px] md:px-8">
-        <Link
-          href="/"
-          className="flex shrink-0 items-center gap-2.5"
-          aria-label={`${siteConfig.name} — Home`}
-        >
-          <span
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground shadow-soft"
-            aria-hidden="true"
-          >
-            MBD
-          </span>
-          <span className="text-sm font-semibold tracking-tight text-primary md:text-base">
-            Solutions
-          </span>
-        </Link>
+      <div className="mx-auto flex h-16 max-w-container min-w-0 items-center justify-between gap-2 px-4 sm:gap-3 sm:px-5 md:h-[72px] md:px-8">
+        <Logo size="nav" showText className="min-w-0 shrink" />
 
         <nav
-          className="hidden items-center gap-0.5 lg:flex"
+          className="hidden min-w-0 items-center gap-0.5 lg:flex"
           aria-label="Primary"
         >
           {nav.map((item) => (
@@ -117,7 +104,7 @@ export function Header() {
               key={item.href}
               href={item.href}
               prefetch
-              className="nav-underline rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:text-primary"
+              className="nav-underline rounded-lg px-2 py-2 text-sm font-medium text-muted transition duration-200 hover:text-primary lg:px-2.5 xl:px-3"
               data-active={isActive(item.href)}
               aria-current={isActive(item.href) ? "page" : undefined}
             >
@@ -130,7 +117,7 @@ export function Header() {
           <Link
             href="/search"
             prefetch
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground transition hover:bg-background hover:text-accent"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground transition duration-200 hover:bg-panel hover:text-accent"
             aria-label="Search"
           >
             <Search className="h-4 w-4" />
@@ -169,7 +156,7 @@ export function Header() {
               onClick={() => setOpen(false)}
             />
             <motion.aside
-              className="fixed inset-y-0 right-0 z-50 flex w-[min(100%,20rem)] flex-col border-l border-border bg-panel/95 shadow-elevated backdrop-blur-xl lg:hidden"
+              className="fixed inset-y-0 right-0 z-50 flex w-[min(100%,20rem)] flex-col border-l border-border bg-surface/98 shadow-elevated backdrop-blur-xl lg:hidden"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -196,6 +183,7 @@ export function Header() {
                   >
                     <Link
                       href={item.href}
+                      prefetch
                       className={cn(
                         "block rounded-xl px-4 py-3 text-sm font-medium transition",
                         isActive(item.href)

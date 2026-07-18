@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { authedFetch, clearAuth, getUser } from "@/lib/auth";
+import { authedFetch, clearAuth, fetchCurrentUser } from "@/lib/auth";
 
 export default function PortalPage() {
   const router = useRouter();
@@ -13,21 +13,28 @@ export default function PortalPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const user = getUser();
-    if (!user) {
-      router.replace("/portal/login");
-      return;
-    }
-    authedFetch("/portal/dashboard")
-      .then(setData)
-      .catch((e) => setError(e.message));
+    fetchCurrentUser().then((user) => {
+      if (!user) {
+        router.replace("/portal/login");
+        return;
+      }
+      authedFetch("/portal/dashboard")
+        .then(setData)
+        .catch((e) => setError(e.message));
+    });
   }, [router]);
 
   if (error) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-28">
         <p className="text-danger">{error}</p>
-        <Button className="mt-4" onClick={() => { clearAuth(); router.push("/portal/login"); }}>
+        <Button
+          className="mt-4"
+          onClick={async () => {
+            await clearAuth();
+            router.push("/portal/login");
+          }}
+        >
           Login again
         </Button>
       </div>
@@ -48,7 +55,15 @@ export default function PortalPage() {
           </div>
           <div className="flex gap-3">
             <Button asChild variant="outline"><Link href="/">Website</Link></Button>
-            <Button variant="danger" onClick={() => { clearAuth(); router.push("/portal/login"); }}>Logout</Button>
+            <Button
+              variant="danger"
+              onClick={async () => {
+                await clearAuth();
+                router.push("/portal/login");
+              }}
+            >
+              Logout
+            </Button>
           </div>
         </div>
 

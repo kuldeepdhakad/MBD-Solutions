@@ -85,19 +85,40 @@ async function main() {
     create: { name: RoleName.USER, description: "Standard user" },
   });
 
-  const password = await bcrypt.hash(process.env.ADMIN_PASSWORD || "Admin@MBD2026", 12);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
-  const admin = await prisma.user.upsert({
-    where: { email: process.env.ADMIN_EMAIL || "admin@monbaidhakad.in" },
-    update: {},
-    create: {
-      email: process.env.ADMIN_EMAIL || "admin@monbaidhakad.in",
-      password,
-      name: "Kuldeep Dhakad",
-      phone: "6263478403",
-      roleId: superAdminRole.id,
-    },
-  });
+  let admin = null;
+
+  if (adminEmail && adminPassword) {
+    const password = await bcrypt.hash(adminPassword, 12);
+    admin = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {},
+      create: {
+        email: adminEmail,
+        password,
+        name: "Kuldeep Dhakad",
+        phone: "6263478403",
+        roleId: superAdminRole.id,
+      },
+    });
+  } else {
+    admin = await prisma.user.findFirst({
+      where: { role: { name: RoleName.SUPER_ADMIN } },
+    });
+    if (!admin) {
+      console.warn(
+        "Admin user not seeded: set ADMIN_EMAIL and ADMIN_PASSWORD in server environment (never use NEXT_PUBLIC_).",
+      );
+    }
+  }
+
+  if (!admin) {
+    throw new Error(
+      "Cannot complete seed without an admin user. Set ADMIN_EMAIL and ADMIN_PASSWORD in your server .env file.",
+    );
+  }
 
   await prisma.founder.upsert({
     where: { id: "founder-mbd-001" },
@@ -1084,7 +1105,15 @@ One restaurant client reported a 40% increase in online orders after launching t
   ];
 
   for (const client of clients) {
-    await prisma.client.create({ data: { ...client, isFeatured: true } });
+    const existing = await prisma.client.findFirst({ where: { name: client.name } });
+    if (existing) {
+      await prisma.client.update({
+        where: { id: existing.id },
+        data: { ...client, isFeatured: true },
+      });
+    } else {
+      await prisma.client.create({ data: { ...client, isFeatured: true } });
+    }
   }
 
   const partners = ["AWS", "Google Cloud", "Vercel", "GitHub", "PostgreSQL", "Docker"];
@@ -1227,7 +1256,7 @@ One restaurant client reported a 40% increase in online orders after launching t
   }
 
   console.log("✅ Seed completed successfully");
-  console.log(`   Admin: ${admin.email}`);
+  console.log(`   Admin: ${admin.email} (password stored as bcrypt hash in database)`);
 }
 
 main()

@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input, Label, Textarea } from "@/components/ui/input";
-import { authedFetch } from "@/lib/auth";
+import { authedFetch, uploadMedia } from "@/lib/auth";
 
 type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "json" | "checkbox";
+  type?: "text" | "textarea" | "number" | "select" | "json" | "checkbox" | "password" | "image";
   options?: string[];
 };
 
@@ -31,6 +31,22 @@ export function ResourceManager({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
+
+  const onImageUpload = async (fieldName: string, file: File) => {
+    setUploadingField(fieldName);
+    setError("");
+    try {
+      const result = await uploadMedia(file);
+      const url = result?.url;
+      if (!url) throw new Error("Upload succeeded but no URL returned");
+      setForm((f) => ({ ...f, [fieldName]: url }));
+    } catch (e: any) {
+      setError(e.message || "Image upload failed");
+    } finally {
+      setUploadingField(null);
+    }
+  };
 
   const load = async () => {
     try {
@@ -53,6 +69,10 @@ export function ResourceManager({
   const onEdit = (item: any) => {
     const next: Record<string, any> = {};
     fields.forEach((field) => {
+      if (field.type === "password") {
+        next[field.name] = "";
+        return;
+      }
       const value = item[field.name];
       next[field.name] =
         field.type === "json" ? JSON.stringify(value ?? [], null, 2) : value ?? "";
@@ -78,6 +98,7 @@ export function ResourceManager({
         }
         if (field.type === "checkbox") value = Boolean(value);
         if (field.type === "number") value = Number(value);
+        if (field.type === "password" && !value) return;
         payload[field.name] = value;
       });
 
@@ -151,10 +172,45 @@ export function ResourceManager({
                       onChange={(e) => setForm((f) => ({ ...f, [field.name]: e.target.checked }))}
                       className="mt-2 h-4 w-4"
                     />
+                  ) : field.type === "image" ? (
+                    <div className="space-y-2">
+                      <Input
+                        id={field.name}
+                        type="url"
+                        placeholder="Image URL or upload below"
+                        value={form[field.name] ?? ""}
+                        onChange={(e) => setForm((f) => ({ ...f, [field.name]: e.target.value }))}
+                      />
+                      <div className="flex flex-wrap items-center gap-3">
+                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-panel px-3 py-2 text-xs font-medium text-foreground transition hover:border-accent/40">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="sr-only"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) void onImageUpload(field.name, file);
+                              e.target.value = "";
+                            }}
+                          />
+                          {uploadingField === field.name ? "Uploading..." : "Upload image"}
+                        </label>
+                        {form[field.name] && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={form[field.name]}
+                            alt="Preview"
+                            className="h-12 w-12 rounded-lg border border-border object-cover"
+                          />
+                        )}
+                      </div>
+                    </div>
                   ) : (
                     <Input
                       id={field.name}
-                      type={field.type || "text"}
+                      type={field.type === "password" ? "password" : field.type || "text"}
+                      autoComplete={field.type === "password" ? "new-password" : undefined}
+                      placeholder={field.type === "password" ? "••••••••" : undefined}
                       value={form[field.name] ?? ""}
                       onChange={(e) => setForm((f) => ({ ...f, [field.name]: e.target.value }))}
                     />

@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CTABand } from "@/components/shared/cta";
 import { DynamicIcon } from "@/components/shared/icon";
 import { JsonLd } from "@/components/seo/json-ld";
+import { DetailBanner } from "@/components/shared/detail-banner";
 import { getOne, whatsappLink } from "@/lib/api";
+import { getServiceDemoUrl } from "@/lib/demos";
+import { getServiceImage } from "@/lib/images";
 import {
   breadcrumbJsonLd,
   createPageMetadata,
@@ -49,6 +52,8 @@ export default async function ServiceDetailPage({ params }: Props) {
     notFound();
   }
 
+  const demoUrl = getServiceDemoUrl(service.slug);
+
   return (
     <>
       <JsonLd
@@ -71,6 +76,11 @@ export default async function ServiceDetailPage({ params }: Props) {
         aria-labelledby="service-heading"
       >
         <div className="mx-auto max-w-container px-5 md:px-8">
+          <DetailBanner
+            src={getServiceImage(service.slug, service.bannerImage)}
+            alt={service.title}
+            priority
+          />
           <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-surface text-accent shadow-soft">
             <DynamicIcon name={service.icon} className="h-7 w-7" />
           </div>
@@ -82,6 +92,13 @@ export default async function ServiceDetailPage({ params }: Props) {
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-muted">{service.description}</p>
           <div className="mt-8 flex flex-wrap gap-3">
+            {demoUrl && (
+              <Button asChild variant="outline">
+                <a href={demoUrl} target="_blank" rel="noopener noreferrer">
+                  Live Demo <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
             <Button asChild variant="accent">
               <Link href="/contact">Get a Quote</Link>
             </Button>

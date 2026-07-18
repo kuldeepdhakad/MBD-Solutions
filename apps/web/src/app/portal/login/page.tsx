@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/input";
+import { Logo } from "@/components/layout/logo";
 import { api } from "@/lib/api";
-import { saveAuth } from "@/lib/auth";
+import { setCachedUser } from "@/lib/auth";
 
 export default function PortalLoginPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function PortalLoginPage() {
         body: JSON.stringify(body),
         revalidate: false,
       });
-      saveAuth(data);
+      setCachedUser(data.user);
       router.push("/portal");
     } catch (err: any) {
       setError(err.message || "Authentication failed");
@@ -42,10 +43,13 @@ export default function PortalLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-5">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-elevated">
         <CardContent className="p-8">
-          <h1 className="text-2xl font-semibold">Client Portal</h1>
-          <p className="mt-2 text-sm text-muted">
+          <div className="mb-6 flex flex-col items-center text-center">
+            <Logo size="lg" showText className="mb-4 justify-center" />
+            <h1 className="text-2xl font-semibold text-primary">Client Portal</h1>
+          </div>
+          <p className="text-center text-sm text-muted">
             {mode === "login" ? "Sign in to view projects and invoices." : "Create a client account."}
           </p>
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
@@ -56,7 +60,17 @@ export default function PortalLoginPage() {
               </>
             )}
             <div><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-            <div><Label>Password</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
+            <div>
+              <Label htmlFor="portal-password">Password</Label>
+              <Input
+                id="portal-password"
+                type="password"
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+              />
+            </div>
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}

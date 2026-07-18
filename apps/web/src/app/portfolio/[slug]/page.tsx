@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CTABand } from "@/components/shared/cta";
 import { JsonLd } from "@/components/seo/json-ld";
+import { DetailBanner } from "@/components/shared/detail-banner";
 import { getOne } from "@/lib/api";
+import { resolveProjectDemoUrl } from "@/lib/demos";
+import { getProjectImage } from "@/lib/images";
 import { breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -42,6 +45,8 @@ export default async function ProjectDetailPage({ params }: Props) {
     notFound();
   }
 
+  const demoUrl = resolveProjectDemoUrl(project);
+
   return (
     <>
       <JsonLd
@@ -53,15 +58,20 @@ export default async function ProjectDetailPage({ params }: Props) {
       />
       <section className="border-b border-border bg-surface/60 pt-28 pb-16 md:pt-36">
         <div className="mx-auto max-w-container px-5 md:px-8">
+          <DetailBanner
+            src={getProjectImage(project.slug, project.coverImage)}
+            alt={project.title}
+            priority
+          />
           <p className="mb-3 text-sm font-medium text-accent">Case Study</p>
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-primary md:text-5xl">
             {project.title}
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-muted">{project.overview}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            {project.liveDemoUrl && (
+            {demoUrl && (
               <Button asChild variant="accent">
-                <a href={project.liveDemoUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
+                <a href={demoUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
               </Button>
             )}
             {project.githubUrl && (

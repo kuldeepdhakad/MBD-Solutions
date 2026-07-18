@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "cdn.jsdelivr.net" },
     ],
   },
   experimental: {
@@ -20,20 +21,13 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return [
-      { source: "/index.html", destination: "/", permanent: true },
-      {
-        source: "/:path*/index.html",
-        destination: "/:path*",
-        permanent: true,
-      },
-    ];
+    return [{ source: "/index.html", destination: "/", permanent: true }];
   },
   async rewrites() {
     return [
       {
-        source: "/demos/:path*",
-        destination: "/demos/:path*",
+        source: "/demos/:slug([a-z0-9-]+)",
+        destination: "/demos/:slug/index.html",
       },
     ];
   },

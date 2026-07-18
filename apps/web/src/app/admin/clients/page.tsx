@@ -13,7 +13,7 @@ export default function AdminClientsPage() {
         { name: "name", label: "Name" },
         { name: "industry", label: "Industry" },
         { name: "website", label: "Website" },
-        { name: "logo", label: "Logo URL" },
+        { name: "logo", label: "Logo", type: "image" },
         { name: "isFeatured", label: "Featured", type: "checkbox" },
         { name: "sortOrder", label: "Sort Order", type: "number" },
       ]}

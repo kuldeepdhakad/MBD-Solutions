@@ -1,10 +1,10 @@
-import { getUserFromRequest, logoutUser } from "@/lib/auth-server";
-import { error, json } from "@/lib/api-helpers";
+import { getUserFromRequest, logoutUser, logoutResponse } from "@/lib/auth-server";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
-  if (!user) return error("Unauthorized", 401);
-  await logoutUser(user.id);
-  return json({ success: true });
+  if (user) {
+    await logoutUser(user.id);
+  }
+  return logoutResponse({ success: true });
 }

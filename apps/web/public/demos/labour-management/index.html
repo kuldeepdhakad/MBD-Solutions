@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/demos/labour-management/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WorkForce ERP - Labour & Contractor Management demo by MBD Solutions Pvt. Ltd.">
+  <title>WorkForce ERP | Labour & Contractor Management – MBD Solutions Demo</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/logos/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/demos/demo-shared.css">
+  <style>
+    :root {
+      --bg: #1a1008;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #f97316;
+      --accent-light: #fb923c;
+      --accent-glow: #f9731640;
+      --accent-gradient: linear-gradient(135deg, #fb923c, #f97316);
+      --border: rgba(255,255,255,0.1);
+      --glass-bg: rgba(255,255,255,0.05);
+      --hero-bg: radial-gradient(ellipse at 30% 20%, #f9731620 0%, transparent 50%), #1a1008;
+    }
+    .demo-hero h1 span { color: var(--accent-light); }
+    .feature-card { text-align: center; }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-family: var(--font-display); margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--text-muted); font-size: 0.9rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: start; }
+    .pricing-card { position: relative; text-align: center; }
+    .pricing-card.popular { border-color: var(--accent); box-shadow: 0 0 40px var(--accent-glow); }
+    .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent-gradient); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pricing-card h3 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .price { font-size: 2rem; font-weight: 800; font-family: var(--font-display); color: var(--accent-light); margin: 1rem 0; }
+    .pricing-card ul { list-style: none; text-align: left; margin: 1.5rem 0; }
+    .pricing-card li { padding: 0.4rem 0; color: var(--text-muted); font-size: 0.9rem; }
+    .pricing-card li::before { content: "✓ "; color: var(--accent-light); font-weight: 700; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .testimonial-text { font-style: italic; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.7; }
+    .testimonial-author strong { display: block; color: var(--text); }
+    .testimonial-author span { font-size: 0.85rem; color: var(--text-muted); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-form input, .contact-form textarea { width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: var(--glass-bg); color: var(--text); font-family: inherit; margin-bottom: 1rem; }
+    .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent); }
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 3rem; }
+    @media (max-width: 768px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card strong { display: block; font-size: 2rem; font-family: var(--font-display); color: var(--accent-light); }
+    .stat-card span { font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="demo-badge">Demo by <a href="/">MBD Solutions</a></div>
+
+  <header class="demo-header">
+    <nav class="demo-nav container">
+      <a href="#home" class="demo-logo">
+        <span class="demo-logo-icon">👷</span>
+        WorkForce ERP
+      </a>
+      <button class="demo-nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="demo-nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="/" class="btn btn-sm btn-outline">← MBD Solutions</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="demo-hero" id="home">
+    <div class="demo-hero-bg"></div>
+    <div class="demo-hero-orb demo-hero-orb-1"></div>
+    <div class="demo-hero-orb demo-hero-orb-2"></div>
+    <div class="container demo-hero-content">
+      <span class="section-tag">Labour & Contractor Management</span>
+      <h1>Manage Your <span>Workforce</span></h1>
+      <p class="demo-hero-sub">Contractor portals, attendance tracking, payroll and workforce reporting for labour businesses.</p>
+      <div class="demo-hero-actions">
+        <a href="#pricing" class="btn btn-primary">View Pricing</a>
+        <a href="#" class="btn btn-whatsapp" id="hero-wa">WhatsApp Us</a>
+        <a href="#contact" class="btn btn-outline">Free Demo</a>
+      </div>
+      <div class="stat-row reveal">
+        <div class="glass glass-card stat-card"><strong>500+</strong><span>Clients</span></div>
+        <div class="glass glass-card stat-card"><strong>99%</strong><span>Satisfaction</span></div>
+        <div class="glass glass-card stat-card"><strong>24/7</strong><span>Support</span></div>
+        <div class="glass glass-card stat-card"><strong>4.9★</strong><span>Rating</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Features</span>
+        <h2>Everything You Need</h2>
+        <p>Powerful features designed for modern businesses.</p>
+      </div>
+      <div class="features-grid">
+      <div class="glass glass-card feature-card reveal">
+        <div class="feature-icon">📝</div>
+        <h3>Labour Registration</h3>
+        <p>Digital worker onboarding.</p>
+      </div>
+      <div class="glass glass-card feature-card reveal">
+        <div class="feature-icon">🏗️</div>
+        <h3>Contractor Portal</h3>
+        <p>Manage multiple contractors.</p>
+      </div>
+      <div class="glass glass-card feature-card reveal">
+        <div class="feature-icon">✅</div>
+        <h3>Attendance</h3>
+        <p>Daily attendance with geo-tagging.</p>
+      </div>
+      <div class="glass glass-card feature-card reveal">
+        <div class="feature-icon">💰</div>
+        <h3>Payroll</h3>
+        <p>Automated wage calculations.</p>
+      </div>
+      <div class="glass glass-card feature-card reveal">
+        <div class="feature-icon">📊</div>
+        <h3>Reports</h3>
+        <p>Workforce analytics dashboard.</p>
+      </div>
+      <div class="glass glass-card feature-card reveal">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile Access</h3>
+        <p>Field supervisors on mobile.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section id="pricing" style="background: rgba(0,0,0,0.25);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Pricing</span>
+        <h2>Transparent Pricing</h2>
+        <p>Choose the plan that fits your business. No hidden charges.</p>
+      </div>
+      <div class="pricing-grid">
+      <div class="glass glass-card pricing-card reveal">
+        
+        <h3>Registration Portal</h3>
+        <div class="price">₹9,999</div>
+        <ul><li>Worker DB</li><li>Documents</li><li>Search</li></ul>
+        <button class="btn btn-primary btn-block pricing-btn" data-plan="Registration Portal">Get Started</button>
+      </div>
+      <div class="glass glass-card pricing-card reveal popular">
+        <span class="popular-badge">Most Popular</span>
+        <h3>Attendance & Payroll</h3>
+        <div class="price">₹19,999</div>
+        <ul><li>Attendance</li><li>Payroll</li><li>Reports</li></ul>
+        <button class="btn btn-primary btn-block pricing-btn" data-plan="Attendance & Payroll">Get Started</button>
+      </div>
+      <div class="glass glass-card pricing-card reveal">
+        
+        <h3>Complete Labour ERP</h3>
+        <div class="price">₹39,999</div>
+        <ul><li>Full ERP</li><li>Contractors</li><li>Mobile</li></ul>
+        <button class="btn btn-primary btn-block pricing-btn" data-plan="Complete Labour ERP">Get Started</button>
+      </div></div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Testimonials</span>
+        <h2>What Clients Say</h2>
+        <p>Trusted by businesses across India.</p>
+      </div>
+      <div class="testimonials-grid">
+      <div class="glass glass-card testimonial-card reveal">
+        <p class="testimonial-text">"Payroll errors eliminated. Workers get paid on time every week."</p>
+        <div class="testimonial-author">
+          <strong>Ramesh Yadav</strong>
+          <span>Contractor</span>
+        </div>
+      </div>
+      <div class="glass glass-card testimonial-card reveal">
+        <p class="testimonial-text">"Attendance tracking saved us from wage disputes."</p>
+        <div class="testimonial-author">
+          <strong>Harish Choudhary</strong>
+          <span>Construction</span>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <section id="contact" style="background: rgba(0,0,0,0.25);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Contact</span>
+        <h2>Get Started Today</h2>
+        <p>Fill the form and our team will contact you within 24 hours.</p>
+      </div>
+      <div class="contact-grid reveal">
+        <div class="glass glass-card">
+          <h3 style="font-family: var(--font-display); margin-bottom: 1rem;">Contact Info</h3>
+          <p style="color: var(--text-muted); margin-bottom: 0.5rem;">📞 +91 6263478403</p>
+          <p style="color: var(--text-muted); margin-bottom: 0.5rem;">📧 kuldeepdhakad153@gmail.com</p>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">💬 WhatsApp Support Available</p>
+          <button class="btn btn-whatsapp btn-block" id="contact-wa">Chat on WhatsApp</button>
+        </div>
+        <form class="glass glass-card contact-form" id="contact-form">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Email Address" required>
+          <input type="tel" placeholder="Phone Number" required>
+          <textarea rows="4" placeholder="Tell us about your requirement..." required></textarea>
+          <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding: 2rem 0; text-align: center; border-top: 1px solid var(--border);">
+    <div class="container">
+      <p style="color: var(--text-muted); font-size: 0.85rem;">
+        © 2026 WorkForce ERP Demo · Built by <a href="/" style="color: var(--accent-light);">MBD Solutions Pvt. Ltd.</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="/demos/demo-shared.js"></script>
+  <script>
+    document.getElementById('hero-wa')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openWhatsApp('Hi, I am interested in WorkForce ERP. Please share more details.');
+    });
+    document.getElementById('contact-wa')?.addEventListener('click', () => {
+      openWhatsApp('Hi, I want a demo of WorkForce ERP.');
+    });
+    document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showToast('Thank you! We will contact you within 24 hours.');
+      e.target.reset();
+    });
+    document.querySelectorAll('.pricing-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        showToast('Selected: ' + btn.dataset.plan + ' plan. Contact us to proceed!');
+      });
+    });
+  </script>
+</body>
+</html>

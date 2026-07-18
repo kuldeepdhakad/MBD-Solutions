@@ -60,7 +60,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     async (user) => {
       try {
         const body = await req.json();
-        let data = { ...body };
+        const data = { ...body };
         delete data.id;
         if (resource === "users" && data.password) {
           data.password = await bcrypt.hash(data.password, 12);

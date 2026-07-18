@@ -14,7 +14,7 @@ export function CTABand({
       <div className="mx-auto max-w-container px-5 md:px-8">
         <div className="rounded-3xl border border-border bg-primary px-8 py-12 text-primary-foreground shadow-elevated md:px-14 md:py-16">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-semibold tracking-tight text-primary-foreground md:text-4xl">
+            <h2 className="text-heading font-semibold tracking-tight text-primary-foreground">
               {title}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-primary-foreground/70 md:text-lg">

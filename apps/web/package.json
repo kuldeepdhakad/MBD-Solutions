@@ -12,6 +12,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
+    "generate-favicons": "node scripts/generate-favicons.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

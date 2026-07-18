@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input, Label, Textarea } from "@/components/ui/input";
-import { authedFetch } from "@/lib/auth";
+import { authedFetch, uploadMedia } from "@/lib/auth";
 
 export default function AdminFounderPage() {
   const [founder, setFounder] = useState<any>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     authedFetch("/founder")
@@ -101,11 +102,51 @@ export default function AdminFounderPage() {
         <CardContent className="space-y-4 p-6">
           {fields.map(([key, label]) => (
             <div key={key}>
-              <Label>{label}</Label>
-              <Input
-                value={founder[key] || ""}
-                onChange={(e) => setFounder({ ...founder, [key]: e.target.value })}
-              />
+              <Label htmlFor={`founder-${key}`}>{label}</Label>
+              {key === "photo" ? (
+                <div className="space-y-2">
+                  <Input
+                    id={`founder-${key}`}
+                    value={founder[key] || ""}
+                    onChange={(e) => setFounder({ ...founder, [key]: e.target.value })}
+                    placeholder="Photo URL or upload below"
+                  />
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-panel px-3 py-2 text-xs font-medium">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setUploadingPhoto(true);
+                          try {
+                            const result = await uploadMedia(file);
+                            if (result?.url) setFounder({ ...founder, photo: result.url });
+                          } catch (err: any) {
+                            setError(err.message);
+                          } finally {
+                            setUploadingPhoto(false);
+                            e.target.value = "";
+                          }
+                        }}
+                      />
+                      {uploadingPhoto ? "Uploading..." : "Upload photo"}
+                    </label>
+                    {founder.photo && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={founder.photo} alt="Founder preview" className="h-12 w-12 rounded-full object-cover" />
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <Input
+                  id={`founder-${key}`}
+                  value={founder[key] || ""}
+                  onChange={(e) => setFounder({ ...founder, [key]: e.target.value })}
+                />
+              )}
             </div>
           ))}
           <div>

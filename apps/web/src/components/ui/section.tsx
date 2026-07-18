@@ -39,7 +39,7 @@ export function SectionHeader({
           {eyebrow}
         </p>
       )}
-      <h2 className="text-3xl font-semibold tracking-tight text-primary md:text-4xl">
+      <h2 className="text-heading font-semibold tracking-tight text-foreground">
         {title}
       </h2>
       {description && (
@@ -68,7 +68,7 @@ export function PageHero({
             {eyebrow}
           </p>
         )}
-        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-primary md:text-5xl">
+        <h1 className="max-w-3xl text-heading font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
           {title}
         </h1>
         {description && (

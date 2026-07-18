@@ -2,6 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import {
+  Award,
+  Briefcase,
+  Headphones,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+
+const statIcons: Record<string, LucideIcon> = {
+  "Projects Delivered": Briefcase,
+  "Happy Clients": Users,
+  "Client Satisfaction": Award,
+  Support: Headphones,
+};
 
 function useInView(ref: React.RefObject<HTMLElement | null>) {
   const [inView, setInView] = useState(false);
@@ -72,24 +86,31 @@ export function AnimatedStats({
 
   return (
     <div ref={ref} className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-      {stats.map((stat, index) => (
-        <motion.div
-          key={stat.id ?? `${stat.label}-${index}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={active ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 0.4, delay: index * 0.06 }}
-          className="rounded-2xl border border-border bg-surface p-5 text-center shadow-soft md:p-6"
-        >
-          <p className="text-2xl font-semibold tracking-tight text-primary md:text-3xl">
-            <AnimatedValue
-              value={stat.value}
-              suffix={stat.suffix || ""}
-              active={active}
-            />
-          </p>
-          <p className="mt-1.5 text-xs text-muted md:text-sm">{stat.label}</p>
-        </motion.div>
-      ))}
+      {stats.map((stat, index) => {
+        const Icon = statIcons[stat.label] ?? Briefcase;
+        return (
+          <motion.div
+            key={stat.id ?? `${stat.label}-${index}`}
+            initial={{ opacity: 0, y: 12 }}
+            animate={active ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.45, delay: index * 0.07 }}
+            whileHover={{ y: -4 }}
+            className="group rounded-2xl border border-border bg-surface p-5 text-center shadow-soft transition-shadow duration-300 hover:border-accent/25 hover:shadow-card md:p-6"
+          >
+            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-accent/8 text-accent transition-colors group-hover:bg-accent/12">
+              <Icon className="h-4 w-4" strokeWidth={2} />
+            </div>
+            <p className="text-2xl font-semibold tracking-tight text-primary md:text-3xl">
+              <AnimatedValue
+                value={stat.value}
+                suffix={stat.suffix || ""}
+                active={active}
+              />
+            </p>
+            <p className="mt-1.5 text-xs font-medium text-muted md:text-sm">{stat.label}</p>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

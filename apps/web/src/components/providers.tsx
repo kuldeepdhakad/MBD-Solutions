@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { useState } from "react";
+import { RoutePrefetch } from "@/components/effects/route-prefetch";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [client] = useState(
@@ -24,7 +25,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem={false}
       disableTransitionOnChange
     >
-      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      <QueryClientProvider client={client}>
+        <RoutePrefetch />
+        {children}
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

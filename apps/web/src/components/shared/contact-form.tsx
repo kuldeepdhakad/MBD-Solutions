@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Textarea } from "@/components/ui/input";
+import { FieldError, Input, Label, Select, Textarea } from "@/components/ui/input";
 import { api } from "@/lib/api";
 
 const schema = z.object({
@@ -46,8 +46,8 @@ export function ContactForm() {
 
   if (success) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-8 text-center">
-        <h3 className="text-xl font-semibold text-primary">Thank you</h3>
+      <div className="animate-fade-in rounded-2xl border border-border bg-surface p-8 text-center shadow-card">
+        <h3 className="text-xl font-semibold text-foreground">Thank you</h3>
         <p className="mt-2 text-muted">
           Your request has been received. Our team will contact you within 24 hours.
         </p>
@@ -59,26 +59,48 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div>
         <Label htmlFor="name">Name *</Label>
-        <Input id="name" placeholder="Your full name" {...register("name")} />
-        {errors.name && <p className="mt-1 text-xs text-danger">{errors.name.message}</p>}
+        <Input
+          id="name"
+          placeholder="Your full name"
+          error={!!errors.name}
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "name-error" : undefined}
+          {...register("name")}
+        />
+        <FieldError message={errors.name?.message} />
       </div>
       <div>
         <Label htmlFor="phone">Mobile Number *</Label>
-        <Input id="phone" placeholder="10-digit mobile number" {...register("phone")} />
-        {errors.phone && <p className="mt-1 text-xs text-danger">{errors.phone.message}</p>}
+        <Input
+          id="phone"
+          type="tel"
+          inputMode="tel"
+          placeholder="10-digit mobile number"
+          error={!!errors.phone}
+          aria-invalid={!!errors.phone}
+          {...register("phone")}
+        />
+        <FieldError message={errors.phone?.message} />
       </div>
       <div>
         <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" placeholder="your@email.com" {...register("email")} />
+        <Input
+          id="email"
+          type="email"
+          autoComplete="email"
+          placeholder="your@email.com"
+          {...register("email")}
+        />
       </div>
       <div>
         <Label htmlFor="businessType">Business Type *</Label>
-        <select
+        <Select
           id="businessType"
-          className="flex h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/15"
+          error={!!errors.businessType}
+          aria-invalid={!!errors.businessType}
           {...register("businessType")}
         >
           <option value="">Select business type</option>
@@ -92,39 +114,42 @@ export function ContactForm() {
           <option>Medical Store</option>
           <option>Hotel</option>
           <option>Other Business</option>
-        </select>
-        {errors.businessType && (
-          <p className="mt-1 text-xs text-danger">{errors.businessType.message}</p>
-        )}
+        </Select>
+        <FieldError message={errors.businessType?.message} />
       </div>
       <div>
         <Label htmlFor="requirement">Requirement *</Label>
         <Textarea
           id="requirement"
           placeholder="Describe what you need..."
+          error={!!errors.requirement}
+          aria-invalid={!!errors.requirement}
           {...register("requirement")}
         />
-        {errors.requirement && (
-          <p className="mt-1 text-xs text-danger">{errors.requirement.message}</p>
-        )}
+        <FieldError message={errors.requirement?.message} />
       </div>
       <div>
         <Label htmlFor="budget">Budget</Label>
-        <select
-          id="budget"
-          className="flex h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/15"
-          {...register("budget")}
-        >
+        <Select id="budget" {...register("budget")}>
           <option value="">Select budget range</option>
           <option>Under ₹10,000</option>
           <option>₹10,000 – ₹25,000</option>
           <option>₹25,000 – ₹50,000</option>
           <option>₹50,000 – ₹1,00,000</option>
           <option>₹1,00,000+</option>
-        </select>
+        </Select>
       </div>
-      {error && <p className="text-sm text-danger">{error}</p>}
-      <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+      {error && (
+        <p className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger" role="alert">
+          {error}
+        </p>
+      )}
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full transition-transform hover:shadow-glow active:scale-[0.98]"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "Submitting..." : "Submit & Get Free Quote"}
       </Button>
     </form>

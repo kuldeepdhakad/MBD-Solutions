@@ -55,6 +55,7 @@ export async function api<T = any>(
   const res = await fetch(`/api${path}`, {
     ...init,
     headers,
+    credentials: "include",
     cache: revalidate === false ? "no-store" : undefined,
   });
 

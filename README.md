@@ -71,10 +71,15 @@ npm run dev
 - Admin: http://localhost:3000/admin/login
 - API: http://localhost:3000/api
 
-### Admin credentials (seeded)
+### Admin access
 
-- Email: `admin@monbaidhakad.in`
-- Password: `Admin@MBD2026`
+Sign in at `/admin/login`. Authentication is handled entirely on the server:
+
+- Passwords are bcrypt-hashed in the database (never stored in plain text)
+- Sessions use **HttpOnly cookies** (not localStorage)
+- JWT secrets and admin seed credentials live in **server-only** `.env` variables (never `NEXT_PUBLIC_`)
+- Login is rate-limited (5 attempts per 15 minutes per IP)
+- All `/admin/*` routes are protected by middleware
 
 ## Admin Dashboard
 

@@ -4,8 +4,8 @@
   "description": "Mon Bai Dhakad Solutions Pvt. Ltd. (MBD Solutions) is an Indian software company providing Web Development, Mobile App Development, Artificial Intelligence, Blockchain, Cloud Computing, UI/UX Design, Digital Transformation and Enterprise Software Solutions.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0b1220",
+  "background_color": "#F8F5EF",
+  "theme_color": "#071B4D",
   "lang": "en-IN",
   "dir": "ltr",
   "orientation": "portrait-primary",
@@ -18,19 +18,19 @@
       "purpose": "any"
     },
     {
-      "src": "/assets/logos/mbd-logo-favicon.png",
+      "src": "/favicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/logos/mbd-logo-icon.png",
+      "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/logos/mbd-logo-full.png",
+      "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

@@ -1,24 +1,88 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
-  ArrowRight,
   CheckCircle2,
   ShieldCheck,
-  Star,
   Clock3,
   BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { CTABand } from "@/components/shared/cta";
 import { DynamicIcon } from "@/components/shared/icon";
+import { ContentImage } from "@/components/shared/content-image";
 import { HeroGlobeClient } from "@/components/home/hero-globe";
 import { AnimatedStats } from "@/components/home/animated-stats";
+import { TrustedBySection } from "@/components/home/trusted-by-section";
+import { ServiceCardPremium } from "@/components/home/service-card-premium";
+import { Skeleton } from "@/components/ui/skeleton";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getHomeData, siteConfig, whatsappLink } from "@/lib/api";
+import { resolveProductDemoUrl } from "@/lib/demos";
+import {
+  BUSINESS_STRENGTHS,
+  DEFAULT_STATS,
+  HERO_COPY,
+  dedupeStats,
+  resolveTrustedClients,
+} from "@/lib/home-content";
+import { ProductCard } from "@/components/shared/product-card";
+import { brandImages, getIndustryImage } from "@/lib/images";
+import { BlogCard } from "@/components/shared/blog-card";
 import { breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
-import { formatDate } from "@/lib/utils";
+
+const TechnologyStackSection = dynamic(
+  () =>
+    import("@/components/home/technology-stack-section").then(
+      (m) => m.TechnologyStackSection,
+    ),
+  {
+    loading: () => (
+      <div className="py-16 md:py-20">
+        <div className="mx-auto max-w-container px-5 md:px-8">
+          <Skeleton className="mx-auto mb-10 h-8 w-48" />
+          <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 rounded-xl" />
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+  },
+);
+
+const PortfolioShowcase = dynamic(
+  () =>
+    import("@/components/home/portfolio-showcase").then((m) => m.PortfolioShowcase),
+  {
+    loading: () => (
+      <div className="grid gap-6 md:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-64 rounded-2xl" />
+        ))}
+      </div>
+    ),
+  },
+);
+
+const TestimonialsShowcase = dynamic(
+  () =>
+    import("@/components/home/testimonials-showcase").then(
+      (m) => m.TestimonialsShowcase,
+    ),
+  {
+    loading: () => (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-48 rounded-2xl" />
+        ))}
+      </div>
+    ),
+  },
+);
 
 export const metadata: Metadata = createPageMetadata({
   title: siteConfig.title,
@@ -44,33 +108,16 @@ const trustBadges = [
 export default async function HomePage() {
   const data: any = await loadHome();
   const hero = data?.sections?.find((s: any) => s.key === "hero");
-  const stats = (
-    data?.stats?.length
-      ? data.stats
-      : [
-          { id: "fallback-1", label: "Projects Delivered", value: "100", suffix: "+" },
-          { id: "fallback-2", label: "Happy Clients", value: "50", suffix: "+" },
-          { id: "fallback-3", label: "Support", value: "24", suffix: "×7" },
-          { id: "fallback-4", label: "Client Satisfaction", value: "99", suffix: "%" },
-        ]
-  ).map((s: any, index: number) => ({
-    id: s.id ?? `stat-${index}`,
-    label: s.label,
-    value: s.value,
-    suffix: s.suffix ?? undefined,
-  }));
+  const stats = dedupeStats(
+    (data?.stats?.length ? data.stats : DEFAULT_STATS).map((s: any, index: number) => ({
+      id: s.id ?? `stat-${index}`,
+      label: s.label,
+      value: s.value,
+      suffix: s.suffix ?? undefined,
+    })),
+  );
 
-  const techBadges =
-    (data?.technologies?.length ?? 0) > 0
-      ? data!.technologies.map((t: any) => ({ id: t.id, name: t.name }))
-      : [
-          { id: "t1", name: "Next.js" },
-          { id: "t2", name: "React" },
-          { id: "t3", name: "Node.js" },
-          { id: "t4", name: "PostgreSQL" },
-          { id: "t5", name: "AI" },
-          { id: "t6", name: "Cloud" },
-        ];
+  const trustedClients = resolveTrustedClients(data?.clients || []);
 
   return (
     <>
@@ -78,6 +125,7 @@ export default async function HomePage() {
         data={breadcrumbJsonLd([{ name: "Home", path: "/" }])}
       />
       <section
+        id="hero"
         className="relative overflow-hidden border-b border-border pt-24 pb-12 md:pt-28 md:pb-14"
         aria-labelledby="home-hero-heading"
       >
@@ -93,22 +141,22 @@ export default async function HomePage() {
             </p>
             <h1
               id="home-hero-heading"
-              className="max-w-xl text-[2rem] font-semibold tracking-tight text-primary sm:text-4xl md:text-[2.75rem] md:leading-[1.12]"
+              className="max-w-xl text-display font-semibold tracking-tight text-foreground"
             >
-              {hero?.title || "Complete Digital Solutions for Every Business"}
+              {hero?.title || HERO_COPY.title}
             </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted md:text-lg">
-              {hero?.subtitle ||
-                "Websites, mobile apps, ERP systems, AI solutions & digital marketing — professional quality at prices that work for you."}
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted md:text-lg md:leading-relaxed">
+              {hero?.subtitle || HERO_COPY.subtitle}
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              {techBadges.slice(0, 6).map((tech: { id: string; name: string }, index: number) => (
+            <div className="mt-6 flex flex-wrap gap-1.5 sm:gap-2">
+              {BUSINESS_STRENGTHS.map((label) => (
                 <span
-                  key={tech.id ?? `${tech.name}-${index}`}
-                  className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-secondary shadow-soft"
+                  key={label}
+                  className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-secondary shadow-soft sm:px-3 sm:text-xs"
                 >
-                  {tech.name}
+                  <CheckCircle2 className="h-3 w-3 shrink-0 text-accent" />
+                  {label}
                 </span>
               ))}
             </div>
@@ -154,53 +202,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {(data?.clients?.length ?? 0) > 0 && (
-        <Section className="py-10 md:py-12">
-          <p className="mb-5 text-center text-xs font-medium uppercase tracking-[0.18em] text-muted">
-            Trusted by growing businesses
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
-            {data.clients.map((client: any) => (
-              <div
-                key={client.id}
-                className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-secondary shadow-soft"
-              >
-                {client.name}
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+      <TrustedBySection clients={trustedClients} />
 
-      <Section>
+      <Section id="services">
         <SectionHeader
           eyebrow="Services"
           title="What We Build"
           description="Transparent pricing. No hidden charges. Custom solutions available on request."
         />
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {(data?.services || []).map((service: any) => (
-            <Card key={service.id} className="group">
-              <CardHeader>
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-background text-accent">
-                  <DynamicIcon name={service.icon} className="h-5 w-5" />
-                </div>
-                <CardTitle>{service.title}</CardTitle>
-                <CardDescription>{service.shortDesc}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm font-medium text-primary">
-                  Starting at {service.startingPrice}
-                </p>
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent"
-                >
-                  Learn more{" "}
-                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-                </Link>
-              </CardContent>
-            </Card>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {(data?.services || []).map((service: any, index: number) => (
+            <ServiceCardPremium
+              key={service.id}
+              id={service.id}
+              title={service.title}
+              shortDesc={service.shortDesc}
+              slug={service.slug}
+              icon={service.icon}
+              startingPrice={service.startingPrice}
+              bannerImage={service.bannerImage}
+              index={index}
+            />
           ))}
         </div>
         <div className="mt-8 text-center">
@@ -210,73 +232,32 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <Section className="bg-panel">
+      <TechnologyStackSection technologies={data?.technologies} />
+
+      <Section id="products" className="bg-panel">
         <SectionHeader
           eyebrow="Products"
           title="Featured Products"
           description="Production-ready platforms for healthcare, fitness, restaurants and enterprise operations."
         />
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {(data?.products || []).map((product: any) => (
-            <Card key={product.id} className="overflow-hidden">
-              <CardHeader>
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                  <DynamicIcon name={product.icon} className="h-5 w-5" />
-                </div>
-                <CardTitle>{product.name}</CardTitle>
-                <CardDescription>{product.tagline}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex gap-3">
-                <Button asChild size="sm">
-                  <Link href={`/products/${product.slug}`}>View Product</Link>
-                </Button>
-                {product.liveDemoUrl && (
-                  <Button asChild size="sm" variant="outline">
-                    <a href={product.liveDemoUrl} target="_blank" rel="noopener noreferrer">
-                      Live Demo
-                    </a>
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+            <ProductCard
+              key={product.id}
+              product={product}
+              demoUrl={resolveProductDemoUrl(product)}
+            />
           ))}
         </div>
       </Section>
 
-      <Section>
+      <Section id="portfolio">
         <SectionHeader
           eyebrow="Portfolio"
           title="Featured Projects"
           description="Real outcomes for clinics, gyms, restaurants and contractors."
         />
-        <div className="grid gap-5 md:grid-cols-2">
-          {(data?.projects || []).map((project: any) => (
-            <Card key={project.id}>
-              <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-                <CardDescription>{project.overview}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4 flex flex-wrap gap-2">
-                  {(project.techStack || []).slice(0, 4).map((tech: string, index: number) => (
-                    <span
-                      key={`${project.id}-tech-${index}`}
-                      className="rounded-full bg-background px-3 py-1 text-xs font-medium text-secondary"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                <Link
-                  href={`/portfolio/${project.slug}`}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-accent"
-                >
-                  View case study <ArrowRight className="h-4 w-4" />
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <PortfolioShowcase projects={data?.projects || []} />
       </Section>
 
       <Section className="bg-panel">
@@ -284,15 +265,32 @@ export default async function HomePage() {
           title="Industries We Serve"
           description="Tailored digital solutions for every business category."
         />
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {(data?.industries || []).map((industry: any) => (
             <Link
               key={industry.id}
               href={`/industries/${industry.slug}`}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 text-sm font-medium text-secondary shadow-soft transition hover:border-accent/30 hover:text-primary"
+              className="group block overflow-hidden rounded-2xl border border-border bg-surface shadow-soft transition hover:border-accent/25 hover:shadow-card"
             >
-              <DynamicIcon name={industry.icon} className="h-4 w-4 text-accent" />
-              {industry.name}
+              <div className="relative h-28 overflow-hidden sm:h-32">
+                <ContentImage
+                  src={getIndustryImage(industry.slug, industry.image)}
+                  alt={industry.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/70 to-transparent" />
+                <div className="absolute bottom-3 left-3 flex h-8 w-8 items-center justify-center rounded-lg border border-white/20 bg-white/15 text-white backdrop-blur-md">
+                  <DynamicIcon name={industry.icon} className="h-4 w-4" />
+                </div>
+              </div>
+              <div className="p-4">
+                <p className="text-sm font-semibold text-primary">{industry.name}</p>
+                {industry.description && (
+                  <p className="mt-1 line-clamp-2 text-xs text-muted">{industry.description}</p>
+                )}
+              </div>
             </Link>
           ))}
         </div>
@@ -319,34 +317,12 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <Section className="bg-panel">
+      <Section id="testimonials" className="bg-panel">
         <SectionHeader
           title="What Our Clients Say"
           description="Trusted by 50+ businesses across India."
         />
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {(data?.testimonials || []).map((item: any) => (
-            <Card key={item.id}>
-              <CardContent className="pt-6">
-                <div className="mb-3 flex gap-1 text-warning">
-                  {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                    <Star key={`${item.id}-star-${i}`} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed text-secondary">
-                  &ldquo;{item.content}&rdquo;
-                </p>
-                <div className="mt-5">
-                  <p className="font-semibold text-primary">{item.name}</p>
-                  <p className="text-sm text-muted">
-                    {item.role}
-                    {item.company ? `, ${item.company}` : ""}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <TestimonialsShowcase items={data?.testimonials || []} />
       </Section>
 
       <Section>
@@ -354,25 +330,9 @@ export default async function HomePage() {
           title="Latest Insights"
           description="Tips and guides to grow your business digitally."
         />
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {(data?.blogs || []).map((blog: any) => (
-            <Card key={blog.id}>
-              <CardHeader>
-                <p className="text-xs font-medium uppercase tracking-wide text-accent">
-                  {blog.category?.name || "Insight"}
-                </p>
-                <CardTitle className="text-xl">{blog.title}</CardTitle>
-                <CardDescription>{blog.excerpt}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-xs text-muted">
-                  {blog.publishedAt ? formatDate(blog.publishedAt) : ""}
-                </p>
-                <Link href={`/blog/${blog.slug}`} className="text-sm font-medium text-accent">
-                  Read article →
-                </Link>
-              </CardContent>
-            </Card>
+            <BlogCard key={blog.id} blog={blog} />
           ))}
         </div>
       </Section>
@@ -397,12 +357,12 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <Section>
+      <Section id="about">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
             <p className="mb-3 text-sm font-medium text-accent">Why MBD Solutions</p>
-            <h2 className="text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-              Built to Help Businesses Grow Digitally
+            <h2 className="text-heading font-semibold tracking-tight text-foreground">
+              Software That Fits How You Work
             </h2>
             <p className="mt-4 leading-relaxed text-muted">
               MBD Solutions was established to help businesses grow digitally through websites,
@@ -423,6 +383,9 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
+            <div className="relative mt-8 hidden h-48 overflow-hidden rounded-2xl border border-border shadow-soft sm:block">
+              <ContentImage src={brandImages.aboutOffice} alt="MBD Solutions office" fill />
+            </div>
           </div>
           <Card className="bg-primary text-primary-foreground">
             <CardContent className="space-y-4 p-8">

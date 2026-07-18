@@ -106,7 +106,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     resource === "users" || resource === "roles" ? FULL_ADMIN_ROLES : ADMIN_ROLES,
     async (user) => {
       try {
-        let data = { ...body };
+        const data = { ...body };
         if (resource === "users" && data.password) {
           data.password = await bcrypt.hash(data.password, 12);
         }

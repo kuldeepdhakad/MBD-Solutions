@@ -27,7 +27,7 @@ export function HeroGlobe() {
 
     const geometry = new THREE.SphereGeometry(1, 64, 64);
     const material = new THREE.MeshStandardMaterial({
-      color: "#1E293B",
+      color: "#071B4D",
       metalness: 0.35,
       roughness: 0.38,
       transparent: true,
@@ -39,7 +39,7 @@ export function HeroGlobe() {
     const wire = new THREE.Mesh(
       new THREE.SphereGeometry(1.015, 36, 36),
       new THREE.MeshBasicMaterial({
-        color: "#2563EB",
+        color: "#1E73FF",
         wireframe: true,
         transparent: true,
         opacity: 0.2,
@@ -50,7 +50,7 @@ export function HeroGlobe() {
     const atmosphere = new THREE.Mesh(
       new THREE.SphereGeometry(1.08, 48, 48),
       new THREE.MeshBasicMaterial({
-        color: "#2563EB",
+        color: "#1E73FF",
         transparent: true,
         opacity: 0.07,
         side: THREE.BackSide,
@@ -73,7 +73,7 @@ export function HeroGlobe() {
     const points = new THREE.Points(
       pointsGeo,
       new THREE.PointsMaterial({
-        color: "#60A5FA",
+        color: "#4D94FF",
         size: 0.022,
         transparent: true,
         opacity: 0.9,
@@ -87,7 +87,7 @@ export function HeroGlobe() {
     key.position.set(3.2, 2.4, 4);
     const fill = new THREE.DirectionalLight("#93C5FD", 0.35);
     fill.position.set(-2.5, -1, 2);
-    const rim = new THREE.PointLight("#2563EB", 0.55, 8);
+    const rim = new THREE.PointLight("#1E73FF", 0.55, 8);
     rim.position.set(-2, 1.5, 2.5);
     scene.add(ambient, key, fill, rim);
 

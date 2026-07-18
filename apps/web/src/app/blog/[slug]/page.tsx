@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/section";
 import { CTABand } from "@/components/shared/cta";
 import { JsonLd } from "@/components/seo/json-ld";
+import { ContentImage } from "@/components/shared/content-image";
 import { getOne } from "@/lib/api";
+import { getBlogImage } from "@/lib/images";
 import { articleJsonLd, breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 
@@ -102,6 +104,20 @@ export default async function BlogDetailPage({ params }: Props) {
         title={blog.title}
         description={blog.excerpt}
       />
+      <section className="border-b border-border bg-panel py-8 md:py-10">
+        <div className="mx-auto max-w-4xl px-5 md:px-8">
+          <div className="relative h-48 overflow-hidden rounded-2xl border border-border shadow-soft sm:h-56 md:h-72">
+            <ContentImage
+              src={getBlogImage(blog.slug, blog.coverImage)}
+              alt={blog.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </section>
       <article className="py-16 md:py-20" itemScope itemType="https://schema.org/Article">
         <div className="mx-auto max-w-3xl px-5 md:px-8">
           <p className="mb-8 text-sm text-muted">

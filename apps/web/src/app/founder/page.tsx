@@ -4,7 +4,9 @@ import { PageHero } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CTABand } from "@/components/shared/cta";
+import { ContentImage } from "@/components/shared/content-image";
 import { getFounder, siteConfig } from "@/lib/api";
+import { brandImages } from "@/lib/images";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Founder",
@@ -63,6 +65,20 @@ export default async function FounderPage() {
   return (
     <>
       <PageHero eyebrow="Founder" title={founder.name} description={founder.title} />
+      <section className="border-b border-border bg-panel py-8 md:py-10">
+        <div className="mx-auto max-w-container px-5 md:px-8">
+          <div className="relative mx-auto h-56 w-full max-w-md overflow-hidden rounded-2xl border border-border shadow-soft sm:h-72 md:h-80">
+            <ContentImage
+              src={founder.photo || brandImages.founderPortrait}
+              alt={founder.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 400px"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </section>
       <section className="py-16 md:py-20">
         <div className="mx-auto max-w-container space-y-8 px-5 md:px-8">
           <Card>
@@ -134,7 +150,7 @@ export default async function FounderPage() {
                 <h2 className="mt-8 text-xl font-semibold">Achievements</h2>
                 <ul className="mt-4 space-y-2 text-sm text-muted">
                   {(founder.achievements || []).map((item: string, index: number) => (
-                    <li key={`achievement-${index}`}>? {item}</li>
+                    <li key={`achievement-${index}`}>• {item}</li>
                   ))}
                 </ul>
               </CardContent>
